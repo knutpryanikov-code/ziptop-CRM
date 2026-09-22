@@ -2,7 +2,7 @@
 import '../styles/global.css';
 interface Props { title: string; description?: string; }
 const { title, description = 'ЗИПТОП CRM — учёт заказов, ремонтов и интеграций экосистемы запчастей для бытовой техники' } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 <!doctype html>
 <html lang="ru">
