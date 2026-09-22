@@ -1,0 +1,36 @@
+name: Deploy CRM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-crm-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build:prod
+      - name: Upload CRM to Yandex Object Storage
+        uses: yc-actions/yc-obj-storage-upload@v5
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          bucket: xn--g1acsdbq.xn--p1ai
+          prefix: crm
+          root: dist
+          skip-unchanged: true
+          fail-on-error: true
