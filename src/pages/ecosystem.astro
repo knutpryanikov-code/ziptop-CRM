@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const DIRECTIONS = [
+  {
+    tag: '1P + 3P', dark: true, icon: '<path d="M3 9.5 12 3l9 6.5"/><path d="M5 8.5V21h14V8.5"/><path d="M9 21v-6h6v6"/>',
+    title: 'Маркетплейс запчастей',
+    text: 'Собственный склад плюс тысячи продавцов. 101 861 SKU у ключевого поставщика, цель — 200 000+ SKU к третьему году.',
+    link: { href: '/', label: 'Открыть каталог' },
+  },
+  {
+    tag: 'SAAS', icon: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    title: 'CRM и учёт',
+    text: 'Своя CRM: заказы, складской учёт, клиентская база, автоуведомления в Telegram, MAX и WhatsApp, выкладка на Авито и маркетплейсы.',
+    link: { href: '/crm/', label: 'Открыть CRM' },
+  },
+  {
+    tag: 'AI / AR', icon: '<path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/><path d="m19 5-1.5 1.5M6.5 17.5 5 19M19 19l-1.5-1.5M6.5 6.5 5 5"/>',
+    title: 'AI-подбор и AI-закупки',
+    text: 'Подбор детали по фото поломки и шильдика с точностью до 98%. Автозакупки по прогнозу спроса снижают ошибки заказа на 60%.',
+    link: { href: '/ai/', label: 'Попробовать AI' },
+  },
+  {
+    tag: 'ЭКО-ЦИКЛ', icon: '<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>',
+    title: 'Утилизация',
+    text: 'Выкуп неисправной техники, разбор на донорские узлы, восстановленные запчасти со скидкой до 60% от цены новых.',
+    link: { href: '/contacts/', label: 'Скоро' },
+  },
+  {
+    tag: 'B2B', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    title: 'Фулфилмент',
+    text: 'Склад 1 500 м² с WMS для сторонних продавцов: приёмка, хранение, упаковка и доставка заказов маркетплейсов.',
+    link: { href: '/partner/', label: 'Скоро' },
+  },
+  {
+    tag: 'ЭКСПАНСИЯ', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m17 8 5 5-5 5"/>',
+    title: 'Франшиза по СФО',
+    text: 'Готовая модель: склад, IT-платформа, обучение. IRR 30–35%, окупаемость 32–44 месяца. Дальше — вся Россия и СНГ.',
+    link: { href: '/partner/', label: 'Условия' },
+  },
+  {
+    tag: 'КАДРЫ', icon: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c0 1.66 2.69 3 6 3s6-1.34 6-3v-4.5"/><path d="M22 10v6"/>',
+    title: 'Учебный центр',
+    text: 'Подготовка мастеров-партнёров с гарантированным потоком заказов. Выпускники пополняют сервисную сеть экосистемы.',
+    link: { href: '/master/', label: 'Сервисная сеть' },
+  },
+];
+---
+<BaseLayout title="ЗИПТОП — Экосистема запчастей и ремонта" active="ecosystem">
+  <!-- Hero -->
+  <section class="bg-slate-950 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-24">
+      <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-500" data-animate>ЗИПТОП · Экосистема</p>
+      <h1 class="mt-4 max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl" data-animate>
+        Не просто магазин запчастей — <span class="bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">замкнутый цикл ремонта</span>
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-7 text-slate-400" data-animate>
+        Маркетплейс, собственная CRM, выкладка на Авито и маркетплейсы, уведомления в мессенджеры, учёт ремонтов, фулфилмент, утилизация, франшиза и учебный центр — в одной платформе.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3" data-animate>
+        <a href="/" class="rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600">Открыть каталог</a>
+        <a href="/partner/" class="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-orange-500 hover:text-orange-400">Стать партнёром</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Направления -->
+  <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600" data-animate>Направления экосистемы ЗИПТОП</p>
+    <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {DIRECTIONS.map((d) => (
+        <article class={`group relative flex flex-col rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 ${d.dark ? 'bg-slate-950 text-white shadow-lg hover:shadow-2xl hover:shadow-slate-900/30' : 'border border-slate-200 bg-white shadow-sm hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10'}`} data-animate="card">
+          <div class="flex items-start justify-between">
+            <span class={`flex h-11 w-11 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 ${d.dark ? 'bg-orange-500/15 text-orange-400' : 'bg-orange-500/10 text-orange-500'}`}>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={d.icon} />
+            </span>
+            <span class={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${d.dark ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-500'}`}>{d.tag}</span>
+          </div>
+          <h2 class={`mt-5 text-lg font-bold ${d.dark ? 'text-white' : 'text-slate-950'}`}>{d.title}</h2>
+          <p class={`mt-2 flex-1 text-sm leading-6 ${d.dark ? 'text-slate-400' : 'text-slate-500'}`}>{d.text}</p>
+          <a href={d.link.href} class={`mt-5 inline-flex items-center gap-1.5 text-sm font-semibold transition ${d.dark ? 'text-orange-400 hover:text-orange-300' : 'text-orange-600 hover:text-orange-700'}`}>
+            {d.link.label} <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      ))}
+
+      <!-- Замкнутый цикл -->
+      <article class="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-orange-500 to-amber-500 p-7 text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/40" data-animate="card">
+        <div>
+          <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v4h-4"/></svg>
+          <h2 class="mt-4 text-lg font-bold">Замкнутый цикл</h2>
+          <p class="mt-2 text-sm leading-6 text-orange-50">Запчасть → доставка → ремонт → гарантия → повторная покупка. Клиент остаётся внутри экосистемы на каждом шаге.</p>
+        </div>
+        <a href="/crm/" class="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-white transition hover:gap-2.5">Посмотреть CRM <span aria-hidden="true">↗</span></a>
+      </article>
+    </div>
+  </section>
+
+  <script>
+    import { gsap } from 'gsap';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 26, autoAlpha: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 34, autoAlpha: 0, duration: 0.6, stagger: 0.08, delay: 0.35, ease: 'power3.out', clearProps: 'all' });
+    }
+  </script>
+</BaseLayout>

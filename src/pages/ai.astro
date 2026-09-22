@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="ЗИПТОП — AI-подбор запчасти по фото" active="ai">
+  <main class="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+    <div class="text-center">
+      <p class="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 text-xs font-semibold text-orange-600" data-animate>
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.7L19.5 10l-5.6 1.3L12 17l-1.9-5.7L4.5 10l5.6-1.3z"/><path d="M19 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg>
+        AI-модуль ЗИПТОП · точность подбора до 98%
+      </p>
+      <h1 class="mt-5 text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl" data-animate>Подбор запчасти по фото</h1>
+      <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-500" data-animate>
+        Сфотографируйте код ошибки на дисплее и шильдик (наклейку с моделью) прибора. Нейросеть определит модель, расшифрует ошибку и подберёт нужную деталь из каталога.
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      <label class="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-slate-300 bg-white p-10 text-center transition-all duration-300 hover:border-orange-400 hover:bg-orange-50/40" data-animate="card" data-drop="error">
+        <input type="file" accept="image/*" class="sr-only" data-file="error" />
+        <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 transition group-hover:bg-orange-100 group-hover:text-orange-500" data-icon>
+          <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </span>
+        <img class="hidden max-h-40 rounded-2xl object-cover" alt="Фото ошибки" data-preview />
+        <span class="font-bold text-slate-800" data-title>Фото ошибки</span>
+        <span class="text-sm text-slate-400" data-hint>Сфотографируйте ошибку вместе с панелью прибора</span>
+        <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600" data-action>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m8 17 4-4 4 4"/></svg>
+          Загрузить фото
+        </span>
+      </label>
+
+      <label class="group flex cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-slate-300 bg-white p-10 text-center transition-all duration-300 hover:border-orange-400 hover:bg-orange-50/40" data-animate="card" data-drop="nameplate">
+        <input type="file" accept="image/*" class="sr-only" data-file="nameplate" />
+        <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 transition group-hover:bg-orange-100 group-hover:text-orange-500" data-icon>
+          <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.83z"/><circle cx="7" cy="7" r="1.5"/></svg>
+        </span>
+        <img class="hidden max-h-40 rounded-2xl object-cover" alt="Фото шильдика" data-preview />
+        <span class="font-bold text-slate-800" data-title>Фото шильдика</span>
+        <span class="text-sm text-slate-400" data-hint>Наклейка с точной моделью и серийным номером</span>
+        <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600" data-action>
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M12 12v9"/><path d="m8 17 4-4 4 4"/></svg>
+          Загрузить фото
+        </span>
+      </label>
+    </div>
+
+    <div class="mt-5 rounded-3xl bg-slate-100/80 p-5" data-animate="card">
+      <label for="ai-model" class="text-xs font-bold uppercase tracking-wider text-slate-500">Модель с шильдика (если читается)</label>
+      <input id="ai-model" type="text" placeholder="Например: Samsung WF60F1R2E2WD, Indesit WISL 102…" class="mt-2.5 w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500/30" />
+    </div>
+
+    <button type="button" id="ai-analyze" disabled class="mt-5 flex w-full items-center justify-center gap-2.5 rounded-full bg-orange-500 py-4 text-base font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50" data-animate="card">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg>
+      Анализировать и подобрать деталь
+    </button>
+
+    <!-- Результат -->
+    <div id="ai-result" class="mt-8 rounded-3xl border-2 border-dashed border-slate-200 bg-white p-10 text-center" data-animate="card">
+      <svg class="mx-auto h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.7L19.5 10l-5.6 1.3L12 17l-1.9-5.7L4.5 10l5.6-1.3z"/><path d="M19 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg>
+      <h2 class="mt-4 text-xl font-bold text-slate-950" id="ai-result-title">Здесь появится результат анализа</h2>
+      <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500" id="ai-result-text">Искусственный интеллект определит модель устройства, прочитает код ошибки и покажет вероятные причины поломки на понятном языке.</p>
+    </div>
+
+    <div class="mt-6 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4 text-sm leading-6 text-sky-800" data-animate="card">
+      Распознавание работает в демо-режиме: боевой AI-модуль подключается на сервере. Точный подбор сейчас доступен по телефону <a class="font-semibold underline" href="tel:+79537777089">+7 953 777-70-89</a> и через <a class="font-semibold underline" href="/scheme/">взрыв-схемы</a>.
+    </div>
+  </main>
+
+  <script>
+    import { gsap } from 'gsap';
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 24, autoAlpha: 0, duration: 0.55, stagger: 0.1, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 28, autoAlpha: 0, duration: 0.55, stagger: 0.09, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+    }
+
+    const analyzeBtn = document.getElementById('ai-analyze') as HTMLButtonElement | null;
+    const modelInput = document.getElementById('ai-model') as HTMLInputElement | null;
+    const resultBox = document.getElementById('ai-result');
+    const resultTitle = document.getElementById('ai-result-title');
+    const resultText = document.getElementById('ai-result-text');
+    const uploaded: Record<string, boolean> = { error: false, nameplate: false };
+
+    function refreshButton(): void {
+      if (analyzeBtn) analyzeBtn.disabled = !(uploaded.error || uploaded.nameplate || (modelInput?.value.trim().length ?? 0) > 3);
+    }
+
+    document.querySelectorAll<HTMLInputElement>('[data-file]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const file = input.files?.[0];
+        const zone = input.closest<HTMLElement>('[data-drop]');
+        if (!zone) return;
+        const key = input.dataset.file ?? 'error';
+        uploaded[key] = Boolean(file);
+        const preview = zone.querySelector<HTMLImageElement>('[data-preview]');
+        const icon = zone.querySelector<HTMLElement>('[data-icon]');
+        const title = zone.querySelector<HTMLElement>('[data-title]');
+        const hint = zone.querySelector<HTMLElement>('[data-hint]');
+        const action = zone.querySelector<HTMLElement>('[data-action]');
+        if (file && preview) {
+          preview.src = URL.createObjectURL(file);
+          preview.classList.remove('hidden');
+          icon?.classList.add('hidden');
+          if (hint) hint.textContent = file.name;
+          if (action) action.innerHTML = 'Заменить фото';
+          zone.classList.add('border-orange-400', 'bg-orange-50/40');
+          if (!reduceMotion) gsap.fromTo(preview, { scale: 0.9, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.4, ease: 'back.out(1.7)' });
+        }
+        if (title && !file) title.textContent = key === 'error' ? 'Фото ошибки' : 'Фото шильдика';
+        refreshButton();
+      });
+    });
+
+    modelInput?.addEventListener('input', refreshButton);
+
+    analyzeBtn?.addEventListener('click', () => {
+      if (!resultBox || !resultTitle || !resultText) return;
+      const model = modelInput?.value.trim() || 'Samsung WF60F1R2E2WD';
+      analyzeBtn.disabled = true;
+      resultBox.classList.remove('border-dashed');
+      resultTitle.textContent = 'Анализируем фото…';
+      resultText.textContent = 'Распознаём панель прибора и шильдик, сопоставляем с базой ошибок.';
+      if (!reduceMotion) gsap.fromTo(resultBox, { autoAlpha: 0.4 }, { autoAlpha: 1, duration: 0.4 });
+
+      window.setTimeout(() => {
+        resultTitle.textContent = `Модель: ${model} · ошибка 5E (не сливает воду)`;
+        resultText.innerHTML = '';
+        const parts = [
+          { name: 'Насос слива (помпа) Askoll 30W', art: 'PMP-ASK-01', price: '1 890 ₽' },
+          { name: 'Патрубок сливной СМА универсальный', art: 'KG0020787', price: '1 500 ₽' },
+          { name: 'Прессостат уровня воды', art: 'PRS-LEV-01', price: '1 240 ₽' },
+        ];
+        const list = document.createElement('div');
+        list.className = 'mx-auto mt-6 grid max-w-2xl gap-3 text-left';
+        parts.forEach((part, i) => {
+          const row = document.createElement('a');
+          row.href = '/';
+          row.className = 'flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 transition hover:border-orange-300 hover:shadow-md';
+          row.innerHTML = `<span><span class="block text-sm font-bold text-slate-900">${i + 1}. ${part.name}</span><span class="mt-0.5 block text-xs text-slate-400">Арт. ${part.art} · в наличии</span></span><span class="shrink-0 text-sm font-extrabold text-orange-600">${part.price}</span>`;
+          list.appendChild(row);
+        });
+        const note = document.createElement('p');
+        note.className = 'mx-auto mt-4 max-w-md text-xs leading-5 text-slate-400';
+        note.textContent = 'Демонстрационный результат. Точную совместимость подтвердит менеджер по телефону.';
+        resultText.appendChild(list);
+        resultText.appendChild(note);
+        if (!reduceMotion) gsap.from(list.children, { y: 16, autoAlpha: 0, duration: 0.45, stagger: 0.08, ease: 'power2.out', clearProps: 'all' });
+        analyzeBtn.disabled = false;
+        resultBox.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+      }, 1600);
+    });
+  </script>
+</BaseLayout>

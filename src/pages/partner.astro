@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const STATS = [
+  { value: '25 000+', label: 'посетителей/мес' },
+  { value: '720+', label: 'товаров в каталоге' },
+  { value: '40–60%', label: 'рост выручки за 6 мес' },
+  { value: '24ч', label: 'модерация' },
+];
+
+const BENEFITS = [
+  { icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>', title: 'Готовая аудитория', text: '25 000+ посетителей в месяц ищут запчасти именно в Сибири — ваши товары видят с первого дня.' },
+  { icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>', title: 'Защита сделок', text: 'Безопасные расчёты, прозрачные выплаты каждую неделю и арбитраж по спорным заказам.' },
+  { icon: '<path d="m12 2 2.4 4.8 5.6.8-4 4 1 5.6-5-2.7-5 2.7 1-5.6-4-4 5.6-.8z"/>', title: 'Маркетинговая поддержка', text: 'Продвижение карточек, участие в акциях и AI-генерация описаний товаров из каталога.' },
+  { icon: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>', title: 'Фулфилмент-склад', text: 'Можно хранить товар на нашем складе 1 500 м²: приёмка, упаковка и доставка — на нас.' },
+];
+
+const REQUIREMENTS = [
+  'ИП или ЮЛ (регистрация РФ)',
+  'Депозит 50 000 ₽ (возвращается при расторжении)',
+  'Минимум 50 SKU на старте',
+  'Наличие склада или торговой точки',
+  'Гарантия на товар минимум 30 дней',
+  'Готовность к интеграции с МойСклад/1С',
+];
+
+const TERMS = [
+  { label: 'Комиссия платформы', value: 'от 8%', accent: true },
+  { label: 'Выплаты', value: 'Еженедельно' },
+  { label: 'Модерация товаров', value: 'до 24 часов' },
+  { label: 'Депозит', value: '50 000 ₽', accent: true },
+  { label: 'Договор', value: 'Оферта / Индивидуальный' },
+];
+---
+<BaseLayout title="ЗИПТОП — Партнёрам и продавцам" active="partner">
+  <!-- Hero -->
+  <section class="bg-slate-950 text-white">
+    <div class="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2">
+      <div>
+        <p class="inline-flex items-center gap-2 rounded-full bg-orange-500/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-orange-400" data-animate>
+          <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 8.5V21h14V8.5"/></svg>
+          Набор продавцов открыт
+        </p>
+        <h1 class="mt-5 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl" data-animate>
+          Продавайте запчасти на <span class="bg-gradient-to-r from-orange-500 to-amber-400 bg-clip-text text-transparent">крупнейшем маркетплейсе Сибири</span>
+        </h1>
+        <p class="mt-6 max-w-lg text-base leading-7 text-slate-400" data-animate>
+          Присоединяйтесь к экосистеме ЗИПТОП. Готовая аудитория покупателей, защита сделок, личный кабинет и маркетинговая поддержка.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3" data-animate>
+          <a href="tel:+79537777089" class="inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Позвонить
+          </a>
+          <a href="#partner-terms" class="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-orange-500 hover:text-orange-400">Условия сотрудничества <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        {STATS.map((s) => (
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur transition-all duration-300 hover:border-orange-500/40 hover:bg-white/10" data-animate="card">
+            <p class="text-3xl font-extrabold tracking-tight text-orange-400">{s.value}</p>
+            <p class="mt-1.5 text-xs text-slate-400">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Почему мы -->
+  <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+    <h2 class="text-center text-3xl font-extrabold tracking-tight text-slate-950" data-animate>Почему продавцы выбирают ЗИПТОП</h2>
+    <p class="mx-auto mt-3 max-w-xl text-center text-sm leading-6 text-slate-500" data-animate>Мы создаём условия, в которых ваш бизнес растёт — от первой заявки до стабильных продаж</p>
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {BENEFITS.map((b) => (
+        <article class="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={b.icon} />
+          </span>
+          <h3 class="mt-4 font-bold text-slate-950">{b.title}</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">{b.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Требования и условия -->
+  <section id="partner-terms" class="mx-auto max-w-7xl scroll-mt-24 px-4 pb-8 sm:px-6">
+    <div class="grid gap-10 lg:grid-cols-2">
+      <div data-animate>
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-950">Требования к продавцам</h2>
+        <ul class="mt-6 space-y-4">
+          {REQUIREMENTS.map((r) => (
+            <li class="flex items-start gap-3 text-sm font-medium text-slate-700">
+              <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 5-5"/></svg>
+              {r}
+            </li>
+          ))}
+        </ul>
+        <a href="mailto:admin@zipinsk.ru?subject=Заявка продавца ЗИПТОП" class="mt-8 inline-flex items-center gap-2 rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600">Подать заявку <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="rounded-3xl bg-slate-950 p-8 text-white shadow-xl" data-animate="card">
+        <h2 class="text-2xl font-extrabold tracking-tight">Условия сотрудничества</h2>
+        <dl class="mt-6 divide-y divide-white/10">
+          {TERMS.map((t) => (
+            <div class="flex items-center justify-between gap-4 py-4">
+              <dt class="text-sm text-slate-400">{t.label}</dt>
+              <dd class={`text-sm font-bold ${t.accent ? 'text-orange-400' : 'text-white'}`}>{t.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { gsap } from 'gsap';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 26, autoAlpha: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 34, autoAlpha: 0, duration: 0.6, stagger: 0.08, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+    }
+  </script>
+</BaseLayout>

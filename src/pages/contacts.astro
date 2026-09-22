@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const MESSENGERS = [
+  { label: 'Telegram', href: 'https://t.me/ziptop_nsk', bg: 'bg-sky-500 hover:bg-sky-600', icon: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>' },
+  { label: 'WhatsApp', href: 'https://wa.me/79537777089', bg: 'bg-emerald-500 hover:bg-emerald-600', icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+  { label: 'MAX', href: 'https://max.ru/ziptop', bg: 'bg-violet-500 hover:bg-violet-600', icon: '<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 15l2.5-6L13 13l2.5-4"/>', hidden: false },
+];
+
+const CONTACTS = [
+  { icon: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>', title: 'Адрес', text: 'г. Новосибирск, ул. Фрунзе, 63', sub: 'Склад-магазин, 1 этаж' },
+  { icon: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>', title: 'Телефон', text: '+7 953 777-70-89', href: 'tel:+79537777089', sub: 'Пн–Пт: 10:00–19:00, Сб–Вс: 11:00–17:00' },
+  { icon: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>', title: 'Почта', text: 'admin@zipinsk.ru', href: 'mailto:admin@zipinsk.ru', sub: 'Ответим в течение рабочего дня' },
+  { icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>', title: 'Реквизиты', text: 'ООО «ТехноПарт»', sub: 'ИНН 5408130126' },
+];
+---
+<BaseLayout title="ЗИПТОП — Контакты" active="contacts">
+  <main class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600" data-animate>ЗИПТОП · Контакты</p>
+    <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl" data-animate>
+      Мы на связи <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">каждый день</span>
+    </h1>
+    <p class="mt-4 max-w-2xl text-base leading-7 text-slate-500" data-animate>
+      Подберём запчасть, проконсультируем по ремонту и ответим на вопросы о сотрудничестве — по телефону, в мессенджерах или лично на складе.
+    </p>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {CONTACTS.map((c) => (
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={c.icon} />
+          </span>
+          <p class="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">{c.title}</p>
+          {c.href
+            ? <a href={c.href} class="mt-1 block font-bold text-slate-950 transition hover:text-orange-600">{c.text}</a>
+            : <p class="mt-1 font-bold text-slate-950">{c.text}</p>}
+          <p class="mt-1 text-sm text-slate-500">{c.sub}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Мессенджеры -->
+    <section class="mt-12 rounded-3xl bg-slate-950 p-8 text-white sm:p-10" data-animate="card">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <div>
+          <h2 class="text-2xl font-extrabold tracking-tight">Быстрее всего — в мессенджере</h2>
+          <p class="mt-2 max-w-md text-sm leading-6 text-slate-400">Пришлите фото шильдика или ошибки — ответим с точной деталью и ценой. Статус заказа тоже приходит туда автоматически.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          {MESSENGERS.map((m) => (
+            <a href={m.href} target="_blank" rel="noopener noreferrer" class={`flex items-center gap-2.5 rounded-full px-6 py-3.5 text-sm font-bold text-white shadow-lg transition ${m.bg}`}>
+              <svg class="h-4.5 w-4.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={m.icon} />
+              {m.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Карта-заглушка -->
+    <section class="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm" data-animate="card">
+      <div class="relative flex h-72 items-center justify-center bg-slate-100">
+        <svg class="absolute inset-0 h-full w-full text-slate-200" viewBox="0 0 800 288" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2" fill="none">
+            <path d="M0 60h800M0 140h800M0 220h800M120 0v288M300 0v288M480 0v288M660 0v288"/>
+          </g>
+        </svg>
+        <div class="relative text-center">
+          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/40">
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <p class="mt-3 font-bold text-slate-900">ул. Фрунзе, 63, Новосибирск</p>
+          <a href="https://yandex.ru/maps/?text=Новосибирск, Фрунзе 63" target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-sm font-semibold text-orange-600 transition hover:text-orange-700">Открыть в Яндекс.Картах ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import { gsap } from 'gsap';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 26, autoAlpha: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 30, autoAlpha: 0, duration: 0.55, stagger: 0.08, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+    }
+  </script>
+</BaseLayout>

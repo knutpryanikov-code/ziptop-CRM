@@ -1,8 +1,28 @@
 ---
 import '../styles/global.css';
-interface Props { title: string; description?: string; }
-const { title, description = 'ЗИПТОП CRM — учёт заказов, ремонтов и интеграций экосистемы запчастей для бытовой техники' } = Astro.props;
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+interface Props {
+  title: string;
+  description?: string;
+  active?: string;
+}
+
+const {
+  title,
+  description = 'ЗИПТОП — экосистема запчастей и ремонта бытовой техники: каталог, взрыв-схемы, AI-подбор, CRM и вызов мастера в Новосибирске',
+  active = '',
+} = Astro.props;
+
+const MENU = [
+  { id: 'catalog', label: 'Каталог', href: '/' },
+  { id: 'scheme', label: 'Взрыв-схемы', href: '/scheme/' },
+  { id: 'ai', label: 'AI-подбор', href: '/ai/' },
+  { id: 'ecosystem', label: 'Экосистема', href: '/ecosystem/' },
+  { id: 'partner', label: 'Партнёрам', href: '/partner/' },
+  { id: 'crm', label: 'CRM', href: '/crm/' },
+  { id: 'master', label: 'Мастер за 1 час', href: '/master/' },
+  { id: 'contacts', label: 'Контакты', href: '/contacts/' },
+];
 ---
 <!doctype html>
 <html lang="ru">
@@ -12,10 +32,121 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     <meta name="description" content={description} />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#f97316" />
-    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>
   <body class="bg-[#f7f8fa] text-slate-900 antialiased">
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="animate-blob absolute -top-48 left-1/2 h-[30rem] w-[46rem] -translate-x-1/2 rounded-full bg-orange-400/15 blur-3xl"></div>
+      <div class="animate-blob animation-delay-2000 absolute -right-40 top-1/3 h-[24rem] w-[24rem] rounded-full bg-amber-300/10 blur-3xl"></div>
+      <div class="animate-blob animation-delay-4000 absolute -left-40 top-2/3 h-[20rem] w-[20rem] rounded-full bg-orange-300/10 blur-3xl"></div>
+    </div>
+
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
+        <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="ЗИПТОП — на главную">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500 shadow-[0_0_18px_rgba(249,115,22,0.45)]">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </span>
+          <span class="text-lg font-extrabold tracking-tight text-slate-900">ЗИП<span class="text-orange-500">ТОП</span></span>
+        </a>
+        <nav class="hidden items-center gap-3.5 whitespace-nowrap text-[13px] font-medium text-slate-600 xl:flex" aria-label="Основная навигация">
+          {MENU.map((item) => (
+            item.id === active
+              ? <span class="rounded-full bg-slate-900 px-3.5 py-1.5 text-white" aria-current="page">{item.label}</span>
+              : <a class="transition hover:text-orange-600" href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="ml-auto flex shrink-0 items-center gap-3">
+          <form action="/" method="get" class="hidden items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm text-slate-400 transition focus-within:ring-2 focus-within:ring-orange-500 lg:flex" role="search">
+            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="search" name="q" placeholder="Артикул, модель или деталь" class="w-40 bg-transparent text-slate-800 placeholder:text-slate-400 focus:outline-none" aria-label="Поиск по каталогу" />
+          </form>
+          <a href="tel:+79537777089" class="hidden items-center gap-2 whitespace-nowrap text-sm font-semibold text-slate-800 transition hover:text-orange-600 md:flex">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +7 953 777-70-89
+          </a>
+          <a href="/" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition hover:bg-orange-500 hover:shadow-orange-500/30" aria-label="Корзина">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+          </a>
+          <button type="button" id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:border-orange-500 hover:text-orange-600 xl:hidden" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <nav id="mobile-menu" class="hidden border-t border-slate-100 bg-white px-4 py-3 xl:hidden" aria-label="Мобильная навигация">
+        <ul class="grid gap-1 text-sm font-medium text-slate-700">
+          {MENU.map((item) => (
+            <li>
+              {item.id === active
+                ? <span class="block rounded-xl bg-slate-900 px-4 py-2.5 text-white" aria-current="page">{item.label}</span>
+                : <a class="block rounded-xl px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-600" href={item.href}>{item.label}</a>}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+
     <slot />
+
+    <footer class="mt-16 bg-slate-950 text-slate-300">
+      <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <a href="/" class="flex items-center gap-2.5">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500 shadow-[0_0_18px_rgba(249,115,22,0.45)]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </span>
+            <span class="text-lg font-extrabold tracking-tight text-white">ЗИП<span class="text-orange-500">ТОП</span></span>
+          </a>
+          <p class="mt-4 text-sm leading-6 text-slate-400">Цифровая экосистема запчастей и ремонта бытовой техники. Каталог поставщика «ДОКТОР ХАУС» — 101 861 позиция в наличии и под заказ.</p>
+        </div>
+        <nav aria-label="Каталог">
+          <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Каталог</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li><a class="transition hover:text-orange-400" href="/">Стиральные машины</a></li>
+            <li><a class="transition hover:text-orange-400" href="/">Холодильники</a></li>
+            <li><a class="transition hover:text-orange-400" href="/">Посудомоечные машины</a></li>
+            <li><a class="transition hover:text-orange-400" href="/">Плиты и духовые шкафы</a></li>
+            <li><a class="transition hover:text-orange-400" href="/">Все категории</a></li>
+          </ul>
+        </nav>
+        <nav aria-label="Экосистема">
+          <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Экосистема</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li><a class="transition hover:text-orange-400" href="/ecosystem/">Обзор экосистемы</a></li>
+            <li><a class="transition hover:text-orange-400" href="/crm/">CRM и учёт</a></li>
+            <li><a class="transition hover:text-orange-400" href="/scheme/">Взрыв-схемы</a></li>
+            <li><a class="transition hover:text-orange-400" href="/ai/">AI-подбор по фото</a></li>
+            <li><a class="transition hover:text-orange-400" href="/partner/">Партнёрам</a></li>
+            <li><a class="transition hover:text-orange-400" href="/master/">Вызов мастера</a></li>
+          </ul>
+        </nav>
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Контакты</h3>
+          <ul class="mt-4 space-y-2.5 text-sm">
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>г. Новосибирск, ул. Фрунзе, 63</li>
+            <li><a class="flex items-center gap-2 transition hover:text-orange-400" href="tel:+79537777089"><svg class="h-4 w-4 shrink-0 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+7 953 777-70-89</a></li>
+            <li><a class="flex items-center gap-2 transition hover:text-orange-400" href="mailto:admin@zipinsk.ru"><svg class="h-4 w-4 shrink-0 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>admin@zipinsk.ru</a></li>
+            <li class="flex items-center gap-2"><svg class="h-4 w-4 shrink-0 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Пн–Пт: 10:00–19:00, Сб–Вс: 11:00–17:00</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/10">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-5 text-xs text-slate-500 sm:px-6">
+          <p>© 2025 ООО «ТехноПарт» (ЗИПТОП). ИНН 5408130126. Все права защищены.</p>
+          <p>Оригинальные запчасти и сертифицированные аналоги · Гарантия до 1 года</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const toggle = document.getElementById('menu-toggle');
+      const menu = document.getElementById('mobile-menu');
+      toggle?.addEventListener('click', () => {
+        if (!menu) return;
+        const open = menu.classList.toggle('hidden') === false;
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+    </script>
   </body>
 </html>

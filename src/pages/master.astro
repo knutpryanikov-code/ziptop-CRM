@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const STEPS = [
+  { n: '01', title: 'Заявка', text: 'Звонок или форма — менеджер уточняет симптомы и модель техники.' },
+  { n: '02', title: 'Мастер с запчастью', text: 'Подбираем деталь со склада и выезжаем — в среднем за 1 час по Новосибирску.' },
+  { n: '03', title: 'Ремонт и гарантия', text: 'Меняем деталь на месте, проверяем работу, даём гарантию до 1 года.' },
+];
+
+const PRICES = [
+  { service: 'Диагностика (при ремонте — бесплатно)', price: '500 ₽' },
+  { service: 'Замена ТЭНа', price: 'от 1 200 ₽' },
+  { service: 'Замена насоса слива', price: 'от 1 100 ₽' },
+  { service: 'Замена манжеты люка', price: 'от 1 800 ₽' },
+  { service: 'Замена подшипникового узла', price: 'от 2 900 ₽' },
+  { service: 'Ремонт модуля управления', price: 'от 2 400 ₽' },
+];
+---
+<BaseLayout title="ЗИПТОП — Мастер за 1 час | Ремонт бытовой техники в Новосибирске" active="master">
+  <main class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+    <div class="grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600" data-animate>Сервисная сеть ЗИПТОП</p>
+        <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl" data-animate>
+          Мастер приедет <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">за 1 час</span> — с запчастью
+        </h1>
+        <p class="mt-5 max-w-lg text-base leading-7 text-slate-500" data-animate>
+          Не нужно везти технику в сервис: диагностика, запчасть со склада и ремонт — у вас дома. Работаем по Новосибирску, Бердску, Искитиму и Обь.
+        </p>
+        <div class="mt-8 space-y-4">
+          {STEPS.map((s) => (
+            <div class="flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-orange-200 hover:shadow-md" data-animate="card">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-500/10 text-sm font-extrabold text-orange-600">{s.n}</span>
+              <div>
+                <p class="font-bold text-slate-950">{s.title}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-500">{s.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Форма вызова -->
+      <div class="rounded-3xl bg-slate-950 p-8 text-white shadow-xl" data-animate="card">
+        <h2 class="text-2xl font-extrabold tracking-tight">Вызвать мастера</h2>
+        <p class="mt-2 text-sm text-slate-400">Ответим в течение 10 минут в рабочее время</p>
+        <form id="master-form" class="mt-6 space-y-4">
+          <div>
+            <label for="mf-name" class="text-xs font-bold uppercase tracking-wider text-slate-400">Имя</label>
+            <input id="mf-name" required type="text" placeholder="Как к вам обращаться" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-orange-500 focus:outline-none" />
+          </div>
+          <div>
+            <label for="mf-phone" class="text-xs font-bold uppercase tracking-wider text-slate-400">Телефон</label>
+            <input id="mf-phone" required type="tel" placeholder="+7 ___ ___-__-__" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-orange-500 focus:outline-none" />
+          </div>
+          <div>
+            <label for="mf-device" class="text-xs font-bold uppercase tracking-wider text-slate-400">Техника</label>
+            <select id="mf-device" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-orange-500 focus:outline-none [&>option]:text-slate-900">
+              <option>Стиральная машина</option>
+              <option>Холодильник</option>
+              <option>Посудомоечная машина</option>
+              <option>Плита / духовой шкаф</option>
+              <option>Сушильная машина</option>
+              <option>Другое</option>
+            </select>
+          </div>
+          <div>
+            <label for="mf-problem" class="text-xs font-bold uppercase tracking-wider text-slate-400">Что случилось</label>
+            <textarea id="mf-problem" rows="3" placeholder="Например: не греет воду, код ошибки 5E" class="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-orange-500 focus:outline-none"></textarea>
+          </div>
+          <button type="submit" class="w-full rounded-full bg-orange-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600">Отправить заявку</button>
+          <p id="mf-done" class="hidden rounded-2xl bg-emerald-500/15 px-4 py-3 text-center text-sm font-semibold text-emerald-400">Заявка принята! Менеджер перезвонит в течение 10 минут.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Цены -->
+    <section class="mt-16">
+      <h2 class="text-2xl font-extrabold tracking-tight text-slate-950" data-animate>Примерные цены на работы</h2>
+      <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {PRICES.map((p) => (
+          <div class="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition hover:border-orange-200" data-animate="card">
+            <span class="text-sm font-medium text-slate-700">{p.service}</span>
+            <span class="shrink-0 text-sm font-extrabold text-orange-600">{p.price}</span>
+          </div>
+        ))}
+      </div>
+      <p class="mt-4 text-xs text-slate-400">Точную стоимость мастер назовёт после диагностики. Запчасти оплачиваются отдельно по ценам каталога.</p>
+    </section>
+  </main>
+
+  <script>
+    import { gsap } from 'gsap';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 26, autoAlpha: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 30, autoAlpha: 0, duration: 0.55, stagger: 0.08, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+    }
+    const form = document.getElementById('master-form') as HTMLFormElement | null;
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const done = document.getElementById('mf-done');
+      done?.classList.remove('hidden');
+      if (done && !reduceMotion) gsap.from(done, { y: 10, autoAlpha: 0, duration: 0.4, ease: 'power2.out', clearProps: 'all' });
+      form.reset();
+    });
+  </script>
+</BaseLayout>

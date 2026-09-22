@@ -1,4 +1,4 @@
-name: Deploy CRM
+name: Deploy site
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-crm-production
+  group: deploy-site-production
   cancel-in-progress: false
 
 jobs:
@@ -25,12 +25,11 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build:prod
-      - name: Upload CRM to Yandex Object Storage
+      - name: Upload site to Yandex Object Storage
         uses: yc-actions/yc-obj-storage-upload@v5
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           bucket: xn--g1acsdbq.xn--p1ai
-          prefix: crm
           root: dist
           include: '**/*'
           skip-unchanged: true

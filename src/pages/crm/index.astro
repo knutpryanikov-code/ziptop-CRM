@@ -1,0 +1,500 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const ICONS = {
+  banknote: '<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  bag: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  package: '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+  grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  plug: '<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+};
+
+const kpis = [
+  { label: 'Выручка (в работе)', value: '29 300 ₽', icon: ICONS.banknote },
+  { label: 'Заказы', value: '8', icon: ICONS.bag },
+  { label: 'Активные ремонты', value: '4', id: 'kpi-repairs', icon: ICONS.wrench },
+  { label: 'SKU на витрине', value: '1 436', icon: ICONS.package },
+];
+
+const tabs = [
+  { id: 'overview', label: 'Обзор', icon: ICONS.grid },
+  { id: 'orders', label: 'Заказы', icon: ICONS.bag },
+  { id: 'repairs', label: 'Ремонты', icon: ICONS.wrench },
+  { id: 'integrations', label: 'Интеграции', icon: ICONS.plug },
+];
+
+const crmData = {
+  flow: ['Новый', 'Оплачен', 'Собран', 'Доставляется', 'Завершён'],
+  stages: ['Заявка', 'Диагностика', 'Ждёт запчасть', 'Ремонт', 'Готово'],
+  orders: [
+    { id: 'ZT-1042', date: '14.09.2026', client: 'Игорь С.', item: 'Ручка люка SAN GIORGIO-37227118 21SG106', channel: 'Сайт', sum: '700 ₽', stage: 0 },
+    { id: 'ZT-1043', date: '13.09.2026', client: 'Марина К.', item: 'Патрубок стиральной машины Bosch сливной KG0020787', channel: 'Авито', sum: '1 500 ₽', stage: 1 },
+    { id: 'ZT-1044', date: '12.09.2026', client: 'ООО «СибРемонт»', item: 'КЭН СМА Zanussi загнут под углом 1170958209', channel: 'Ozon', sum: '3 150 ₽', stage: 2 },
+    { id: 'ZT-1045', date: '11.09.2026', client: 'Алексей М.', item: 'КЭН-3 180 градусов D12mm', channel: 'WB', sum: '1 650 ₽', stage: 3 },
+    { id: 'ZT-1046', date: '10.09.2026', client: 'Ольга Д.', item: 'Амортизатор, sensor, +connection-Kit, БОШ 448033', channel: 'Телефон', sum: '20 350 ₽', stage: 4 },
+    { id: 'ZT-1047', date: '09.09.2026', client: 'СЦ «РемБытТех»', item: 'КЛАПАН СОЛЕНОИДНЫЙ 1260615214', channel: 'Сайт', sum: '5 600 ₽', stage: 0 },
+    { id: 'ZT-1048', date: '08.09.2026', client: 'Дмитрий В.', item: 'Замок люка УБЛ ZV-449 на СМА Атлант универсал 908092001902', channel: 'Авито', sum: '1 000 ₽', stage: 1 },
+    { id: 'ZT-1049', date: '07.09.2026', client: 'Наталья П.', item: 'КЭН-3 90 градусов D12mm', channel: 'Ozon', sum: '1 650 ₽', stage: 2 },
+  ],
+  repairs: [
+    { id: 'R-204', client: 'Дмитрий В.', device: 'СМА Indesit WISL 102', problem: 'Сильная вибрация', part: 'Амортизаторы 100N', master: 'Сергей Н.', stage: 0 },
+    { id: 'R-205', client: 'Ольга Д.', device: 'ПММ Bosch SMS24AW01R', problem: 'Не сливает', part: 'Сливная помпа', master: 'Павел С.', stage: 1 },
+    { id: 'R-207', client: 'Марина К.', device: 'СМА Samsung WF60F1R2E2WD', problem: 'Не греет воду', part: 'ТЭН 1900W', master: 'Павел С.', stage: 2 },
+    { id: 'R-206', client: 'Игорь С.', device: 'Холодильник Атлант ХМ-6025', problem: 'Не морозит', part: 'Компрессор GMCC', master: 'Андрей Л.', stage: 3 },
+    { id: 'R-203', client: 'Наталья П.', device: 'СВЧ Samsung ME83KRS', problem: 'Не греет', part: 'Магнетрон', master: 'Андрей Л.', stage: 4 },
+    { id: 'R-202', client: 'ООО «СибРемонт»', device: 'СМА LG F2J3NS0W', problem: 'Течь снизу', part: 'Манжета люка', master: 'Павел С.', stage: 4 },
+  ],
+  notifications: [
+    { time: '12:41', channel: 'Telegram', text: 'Заказ ZT-1042 оплачен — 1 350 ₽ (Ozon)' },
+    { time: '12:03', channel: 'WhatsApp', text: 'Ремонт R-203 переведён в «Готово» — клиенту отправлено уведомление' },
+    { time: '11:27', channel: 'MAX', text: 'Синхронизация МойСклад: обновлено 1 214 цен, 38 новых позиций' },
+    { time: '10:55', channel: 'Telegram', text: 'Остаток «Помпа 30W» ниже минимума (2 шт.) — создана заявка на закупку' },
+    { time: '10:12', channel: 'WhatsApp', text: 'Новая заявка на выезд мастера: СМА Indesit, вибрация' },
+  ],
+  channels: [
+    { id: 'telegram', label: 'Telegram', on: true },
+    { id: 'whatsapp', label: 'WhatsApp', on: true },
+    { id: 'max', label: 'MAX', on: false },
+  ],
+};
+---
+<BaseLayout title="ЗИПТОП — CRM и учёт экосистемы" active="crm">
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="crm-eyebrow text-xs font-bold uppercase tracking-[0.25em] text-orange-600">ЗИПТОП · Платформа</p>
+        <h1 class="crm-title mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">CRM и учёт <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">экосистемы</span></h1>
+      </div>
+      <div class="flex rounded-full bg-slate-100 p-1" role="tablist" aria-label="Разделы CRM">
+        {tabs.map((tab) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${tab.id}`}
+            aria-controls={`panel-${tab.id}`}
+            aria-selected={tab.id === 'overview' ? 'true' : 'false'}
+            data-tab={tab.id}
+            class:list={[
+              'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95',
+              tab.id === 'overview' ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-slate-600 hover:text-slate-900',
+            ]}
+          ><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={tab.icon} />{tab.label}</button>
+        ))}
+      </div>
+    </div>
+
+    <p class="crm-banner mt-6 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
+      <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>Рабочий стол менеджера в демо-режиме: изменения (статусы заказов, ремонты, каналы уведомлений) сохраняются в этом браузере. Интеграция с МойСклад по API уже подключена к каталогу сайта; боевые подключения Авито, Ozon, WB, Яндекс Маркет и мессенджеров выполняются на сервере по API-ключам.</span>
+    </p>
+
+    <!-- Обзор -->
+    <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview" class="mt-8">
+      <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {kpis.map((kpi) => (
+          <div class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="kpi">
+            <span class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={kpi.icon} />
+            </span>
+            <p class="text-sm text-slate-500">{kpi.label}</p>
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950" id={kpi.id} data-counter>{kpi.value}</p>
+            <span class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-orange-500 to-amber-400 transition-transform duration-300 group-hover:scale-x-100"></span>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-2">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg" data-animate="card">
+          <h2 class="flex items-center gap-2 text-lg font-bold text-slate-950">
+            <svg class="h-5 w-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            Уведомления в мессенджеры
+          </h2>
+          <div class="mt-4 flex flex-wrap gap-2" id="channel-toggles"></div>
+          <ol class="mt-5 space-y-4" id="notifications-feed"></ol>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg" data-animate="card">
+          <div class="flex items-center justify-between">
+            <h2 class="flex items-center gap-2 text-lg font-bold text-slate-950">
+              <svg class="h-5 w-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              Ремонты в работе
+            </h2>
+            <button type="button" class="text-sm font-semibold text-orange-600 transition hover:text-orange-700" data-goto-tab="repairs">Все ↗</button>
+          </div>
+          <ul class="mt-5 space-y-3" id="repairs-active-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Заказы -->
+    <section id="panel-orders" role="tabpanel" aria-labelledby="tab-orders" data-panel="orders" class="mt-8" hidden>
+      <div class="rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-6 py-5">
+          <h2 class="text-lg font-bold text-slate-950">Заказы со всех каналов</h2>
+          <p class="text-sm text-slate-400">Сайт · Авито · Ozon · WB · Телефон</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[760px] text-left text-sm">
+            <thead>
+              <tr class="border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <th scope="col" class="px-6 py-3">Заказ</th>
+                <th scope="col" class="px-4 py-3">Клиент</th>
+                <th scope="col" class="px-4 py-3">Товар</th>
+                <th scope="col" class="px-4 py-3">Канал</th>
+                <th scope="col" class="px-4 py-3">Сумма</th>
+                <th scope="col" class="px-4 py-3">Статус</th>
+                <th scope="col" class="px-6 py-3"><span class="sr-only">Изменить статус</span></th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body"></tbody>
+          </table>
+        </div>
+        <p class="border-t border-slate-100 px-6 py-4 text-sm text-slate-400">Смена статуса автоматически отправляет уведомление клиенту во включённые мессенджеры.</p>
+      </div>
+    </section>
+
+    <!-- Ремонты -->
+    <section id="panel-repairs" role="tabpanel" aria-labelledby="tab-repairs" data-panel="repairs" class="mt-8" hidden>
+      <div class="grid gap-4 md:grid-cols-3 xl:grid-cols-5" id="kanban-board"></div>
+      <p class="mt-6 text-center text-sm text-slate-400">Каждый переход этапа генерирует уведомление клиенту и менеджеру. История статусов хранится в карточке ремонта.</p>
+    </section>
+
+    <!-- Интеграции -->
+    <section id="panel-integrations" role="tabpanel" aria-labelledby="tab-integrations" data-panel="integrations" class="mt-8" hidden>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <article class="rounded-3xl bg-slate-950 p-7 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-900/30" data-animate="card">
+          <div class="flex items-start justify-between">
+            <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+            <span class="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              Подключено
+            </span>
+          </div>
+          <h3 class="mt-5 text-xl font-bold">МойСклад — «ДОКТОР ХАУС»</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-300">Живая синхронизация каталога: 101 861 SKU, 456 папок, цены и остатки. На витрине сайта уже работают реальные товары с фото.</p>
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <div class="rounded-2xl bg-white/5 p-4 text-center"><p class="text-xl font-extrabold text-orange-400">101 861</p><p class="mt-1 text-xs text-slate-400">SKU</p></div>
+            <div class="rounded-2xl bg-white/5 p-4 text-center"><p class="text-xl font-extrabold text-orange-400">456</p><p class="mt-1 text-xs text-slate-400">папок</p></div>
+            <div class="rounded-2xl bg-white/5 p-4 text-center"><p class="text-xl font-extrabold text-orange-400">15 мин</p><p class="mt-1 text-xs text-slate-400">период синхр.</p></div>
+          </div>
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
+          <div class="flex items-start justify-between">
+            <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">OZON · WB · Я.Маркет</span>
+          </div>
+          <h3 class="mt-5 text-xl font-bold text-slate-950">Автокарточки маркетплейсов</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Генерация названия, описания и характеристик из карточки каталога — по правилам каждой площадки. Очередь публикации и статусы модерации.</p>
+          <a href="/" class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 transition hover:text-orange-700">Открыть генератор ↗</a>
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
+          <div class="flex items-start justify-between">
+            <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Avito API</span>
+          </div>
+          <h3 class="mt-5 text-xl font-bold text-slate-950">Выкладка на Авито</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Массовая публикация объявлений из каталога: автотекст, фото, цена с наценкой канала, автоснятие при нулевом остатке на складе.</p>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {['Автотекст объявления', 'Фото из карточки', 'Синхронизация остатков', 'Автоответы в чат'].map((chip) => (
+              <li class="rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-medium text-slate-600">{chip}</li>
+            ))}
+          </ul>
+        </article>
+
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
+          <div class="flex items-start justify-between">
+            <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Telegram · MAX · WhatsApp</span>
+          </div>
+          <h3 class="mt-5 text-xl font-bold text-slate-950">Уведомления и боты</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Клиенту: статус заказа и ремонта, готовность, доставка. Менеджеру: новые заявки, низкие остатки, оплаты. Шаблоны настраиваются в CRM.</p>
+          <blockquote class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">Здравствуйте, <mark class="bg-transparent font-semibold text-orange-600">{'{имя}'}</mark>! Ваш заказ <mark class="bg-transparent font-semibold text-orange-600">{'{номер}'}</mark> собран и передан в доставку. Ориентировочное время: сегодня до 20:00. — ЗИПТОП</blockquote>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script id="crm-data" type="application/json" set:html={JSON.stringify(crmData)}></script>
+
+  <script>
+    import { gsap } from 'gsap';
+
+    interface CrmOrder { id: string; date: string; client: string; item: string; channel: string; sum: string; stage: number }
+    interface CrmRepair { id: string; client: string; device: string; problem: string; part: string; master: string; stage: number }
+    interface CrmNotification { time: string; channel: string; text: string }
+    interface CrmChannel { id: string; label: string; on: boolean }
+    interface CrmData {
+      flow: string[];
+      stages: string[];
+      orders: CrmOrder[];
+      repairs: CrmRepair[];
+      notifications: CrmNotification[];
+      channels: CrmChannel[];
+    }
+    interface CrmState {
+      tab: string;
+      channels: Record<string, boolean>;
+      orders: Record<string, number>;
+      repairs: Record<string, number>;
+    }
+
+    const data: CrmData = JSON.parse(document.getElementById('crm-data')?.textContent ?? '{}');
+    const STORAGE_KEY = 'ziptop-crm-v1';
+
+    const defaults: CrmState = {
+      tab: 'overview',
+      channels: Object.fromEntries(data.channels.map((c) => [c.id, c.on])),
+      orders: Object.fromEntries(data.orders.map((o) => [o.id, o.stage])),
+      repairs: Object.fromEntries(data.repairs.map((r) => [r.id, r.stage])),
+    };
+
+    let state: CrmState = defaults;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const saved: unknown = raw ? JSON.parse(raw) : null;
+      if (saved && typeof saved === 'object') state = { ...defaults, ...(saved as Partial<CrmState>) };
+    } catch { /* демо-режим без сохранения */ }
+
+    const save = (): void => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
+    };
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const orderBadge = [
+      'bg-orange-100 text-orange-700',
+      'bg-sky-100 text-sky-700',
+      'bg-indigo-100 text-indigo-700',
+      'bg-violet-100 text-violet-700',
+      'bg-emerald-100 text-emerald-700',
+    ];
+    const stageColor = ['bg-slate-300', 'bg-amber-400', 'bg-orange-500', 'bg-sky-500', 'bg-emerald-500'];
+    const stageBorder = ['border-slate-300', 'border-amber-400', 'border-orange-500', 'border-sky-500', 'border-emerald-500'];
+    const stageTint = ['bg-gradient-to-br from-slate-50 to-white', 'bg-gradient-to-br from-amber-50 to-white', 'bg-gradient-to-br from-orange-50 to-white', 'bg-gradient-to-br from-sky-50 to-white', 'bg-gradient-to-br from-emerald-50 to-white'];
+    const channelBadge: Record<string, string> = {
+      Telegram: 'bg-sky-100 text-sky-700',
+      WhatsApp: 'bg-emerald-100 text-emerald-700',
+      MAX: 'bg-violet-100 text-violet-700',
+    };
+
+    const escMap: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+    const esc = (s: string): string => s.replace(/[&<>"']/g, (ch) => escMap[ch] ?? ch);
+
+    /* ---------- Вкладки ---------- */
+    const tabButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-panel]'));
+
+    function setTab(id: string, updateHash = true, animate = true): void {
+      state.tab = id;
+      const tabBase = 'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95';
+      tabButtons.forEach((btn) => {
+        const active = btn.dataset.tab === id;
+        btn.setAttribute('aria-selected', String(active));
+        btn.className = active ? `${tabBase} bg-slate-900 text-white shadow-lg shadow-slate-900/20` : `${tabBase} text-slate-600 hover:text-slate-900`;
+      });
+      panels.forEach((p) => { p.hidden = p.dataset.panel !== id; });
+      const activePanel = panels.find((p) => p.dataset.panel === id);
+      if (activePanel && animate && !reduceMotion) {
+        gsap.fromTo(activePanel, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out', clearProps: 'all' });
+      }
+      if (updateHash) history.replaceState(null, '', `#${id}`);
+      save();
+    }
+
+    tabButtons.forEach((btn, i) => {
+      btn.addEventListener('click', () => setTab(btn.dataset.tab ?? 'overview'));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const next = tabButtons[(i + (e.key === 'ArrowRight' ? 1 : tabButtons.length - 1)) % tabButtons.length];
+        next.focus();
+        setTab(next.dataset.tab ?? 'overview');
+      });
+    });
+    document.querySelectorAll<HTMLElement>('[data-goto-tab]').forEach((el) =>
+      el.addEventListener('click', () => setTab(el.dataset.gotoTab ?? 'overview'))
+    );
+
+    /* ---------- Каналы уведомлений ---------- */
+    const togglesBox = document.getElementById('channel-toggles');
+    function renderChannels(): void {
+      if (!togglesBox) return;
+      togglesBox.innerHTML = '';
+      data.channels.forEach((ch) => {
+        const on = state.channels[ch.id] ?? ch.on;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('aria-pressed', String(on));
+        btn.className = `rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95 ${
+          on ? 'bg-sky-100 text-sky-700 ring-1 ring-sky-300 hover:bg-sky-200' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+        }`;
+        btn.textContent = `${ch.label} ${on ? 'вкл' : 'выкл'}`;
+        btn.addEventListener('click', () => { state.channels[ch.id] = !on; save(); renderChannels(); renderFeed(); });
+        togglesBox.appendChild(btn);
+      });
+    }
+
+    /* ---------- Лента уведомлений ---------- */
+    const feed = document.getElementById('notifications-feed');
+    function renderFeed(): void {
+      if (!feed) return;
+      feed.innerHTML = data.notifications.map((n) => {
+        const off = state.channels[n.channel.toLowerCase()] === false;
+        const badge = channelBadge[n.channel] ?? 'bg-slate-100 text-slate-600';
+        return `<li class="flex gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0 ${off ? 'opacity-40' : ''}">
+          <time class="w-10 shrink-0 pt-0.5 text-xs text-slate-400">${esc(n.time)}</time>
+          <div>
+            <span class="rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge}">${esc(n.channel)}</span>
+            <p class="mt-1.5 text-sm leading-6 text-slate-700">${esc(n.text)}</p>
+          </div>
+        </li>`;
+      }).join('');
+    }
+
+    /* ---------- Кнопки смены статуса ---------- */
+    function moveButton(id: string, kind: string, dir: number, disabled: boolean): string {
+      return `<button type="button" data-kind="${kind}" data-id="${id}" data-dir="${dir}" ${disabled ? 'disabled' : ''}
+        aria-label="${dir > 0 ? 'Следующий статус' : 'Предыдущий статус'}"
+        class="rounded-full p-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${disabled ? 'cursor-not-allowed text-slate-200' : 'text-slate-500 hover:bg-slate-100 hover:text-orange-600'}">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="${dir > 0 ? 'm9 18 6-6-6-6' : 'm15 18-6-6 6-6'}"/></svg>
+      </button>`;
+    }
+
+    /* ---------- Заказы ---------- */
+    const ordersBody = document.getElementById('orders-table-body');
+    function renderOrders(): void {
+      if (!ordersBody) return;
+      ordersBody.innerHTML = data.orders.map((o) => {
+        const st = state.orders[o.id] ?? o.stage;
+        return `<tr data-order-id="${o.id}" class="border-b border-slate-100 transition-colors last:border-0 hover:bg-orange-50/40">
+          <td class="px-6 py-4"><p class="font-bold text-slate-900">${esc(o.id)}</p><p class="mt-0.5 text-xs text-slate-400">${esc(o.date)}</p></td>
+          <td class="px-4 py-4 text-slate-700">${esc(o.client)}</td>
+          <td class="max-w-[260px] truncate px-4 py-4 text-slate-600" title="${esc(o.item)}">${esc(o.item)}</td>
+          <td class="px-4 py-4"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">${esc(o.channel)}</span></td>
+          <td class="px-4 py-4 font-bold text-slate-900">${esc(o.sum)}</td>
+          <td class="px-4 py-4"><span data-badge class="inline-block rounded-full px-3 py-1 text-xs font-semibold ${orderBadge[st]}">${esc(data.flow[st])}</span></td>
+          <td class="whitespace-nowrap px-6 py-4">${moveButton(o.id, 'order', -1, st === 0)}${moveButton(o.id, 'order', 1, st === data.flow.length - 1)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    /* ---------- Канбан ремонтов ---------- */
+    const board = document.getElementById('kanban-board');
+    function repairCard(r: CrmRepair): string {
+      const st = state.repairs[r.id] ?? r.stage;
+      return `<article data-repair-id="${r.id}" class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} ${stageTint[st]} p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+        <p class="text-sm font-bold text-slate-900">${esc(r.id)} · ${esc(r.client)}</p>
+        <p class="mt-0.5 text-xs font-medium text-slate-500">${esc(r.device)}</p>
+        <p class="mt-2 text-xs leading-5 text-slate-500">${esc(r.problem)} · ${esc(r.part)}</p>
+        <p class="mt-1 text-xs text-slate-400">Мастер: ${esc(r.master)}</p>
+        <div class="mt-3 flex justify-between">
+          ${moveButton(r.id, 'repair', -1, st === 0)}
+          ${moveButton(r.id, 'repair', 1, st === data.stages.length - 1)}
+        </div>
+      </article>`;
+    }
+    function renderBoard(animate = false): void {
+      if (!board) return;
+      board.innerHTML = data.stages.map((stage, i) => {
+        const items = data.repairs.filter((r) => (state.repairs[r.id] ?? r.stage) === i);
+        return `<section class="rounded-3xl bg-slate-100/70 p-3" aria-label="${esc(stage)}">
+          <header class="flex items-center justify-between px-2 pb-3 pt-1">
+            <h3 class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"><span class="h-2 w-2 rounded-full ${stageColor[i]}"></span>${esc(stage)}</h3>
+            <span class="text-xs font-bold text-slate-400">${items.length}</span>
+          </header>
+          <div class="space-y-3">${items.map(repairCard).join('') || '<p class="px-2 pb-2 text-xs text-slate-400">Нет ремонтов</p>'}</div>
+        </section>`;
+      }).join('');
+      if (animate && !reduceMotion) {
+        gsap.from('#kanban-board article', { y: 16, autoAlpha: 0, scale: 0.96, duration: 0.35, stagger: 0.045, ease: 'back.out(1.6)', clearProps: 'all' });
+      }
+    }
+
+    /* ---------- Ремонты в работе (обзор) + KPI ---------- */
+    function renderActiveRepairs(): void {
+      const active = data.repairs.filter((r) => (state.repairs[r.id] ?? r.stage) < data.stages.length - 1);
+      const box = document.getElementById('repairs-active-list');
+      if (box) {
+        box.innerHTML = active.map((r) => {
+          const st = state.repairs[r.id] ?? r.stage;
+          return `<li class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} ${stageTint[st]} p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-sm font-bold text-slate-900">${esc(r.id)} · ${esc(r.device)}</p>
+              <span class="shrink-0 text-xs font-medium text-slate-400">${esc(data.stages[st])}</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-500">${esc(r.problem)} · запчасть: ${esc(r.part)} · мастер ${esc(r.master)}</p>
+          </li>`;
+        }).join('') || '<li class="text-sm text-slate-400">Все ремонты завершены</li>';
+      }
+      const kpi = document.getElementById('kpi-repairs');
+      if (kpi) kpi.textContent = String(active.length);
+    }
+
+    /* ---------- Делегирование кликов по кнопкам смены статуса ---------- */
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const btn = target.closest<HTMLButtonElement>('button[data-kind]');
+      if (!btn || btn.disabled) return;
+      const kind = btn.dataset.kind;
+      const id = btn.dataset.id;
+      const dir = Number(btn.dataset.dir);
+      if (!kind || !id || Number.isNaN(dir)) return;
+      if (kind === 'order') {
+        state.orders[id] = Math.min(data.flow.length - 1, Math.max(0, (state.orders[id] ?? 0) + dir));
+        save(); renderOrders();
+        if (!reduceMotion) {
+          const badge = document.querySelector(`tr[data-order-id="${id}"] [data-badge]`);
+          if (badge) gsap.fromTo(badge, { scale: 0.7 }, { scale: 1, duration: 0.45, ease: 'back.out(3)', clearProps: 'all' });
+        }
+      } else {
+        state.repairs[id] = Math.min(data.stages.length - 1, Math.max(0, (state.repairs[id] ?? 0) + dir));
+        save(); renderBoard(true); renderActiveRepairs();
+      }
+    });
+
+    /* ---------- Входные анимации и счётчики ---------- */
+    function animateCounters(): void {
+      document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => {
+        const finalText = el.textContent ?? '';
+        const match = finalText.match(/[\d\s ]+/);
+        if (!match) return;
+        const target = parseInt(match[0].replace(/[^\d]/g, ''), 10);
+        const suffix = finalText.slice(match[0].length).trimStart();
+        if (Number.isNaN(target)) return;
+        const counter = { v: 0 };
+        gsap.to(counter, {
+          v: target,
+          duration: 1.4,
+          ease: 'power2.out',
+          onUpdate: () => { el.textContent = `${Math.round(counter.v).toLocaleString('ru-RU')}${suffix ? ` ${suffix}` : ''}`; },
+        });
+      });
+    }
+
+    function entrance(): void {
+      const ease = 'power3.out';
+      gsap.from('header', { y: -32, autoAlpha: 0, duration: 0.5, ease, clearProps: 'all' });
+      gsap.from('.crm-eyebrow, .crm-title', { y: 26, autoAlpha: 0, duration: 0.55, stagger: 0.1, delay: 0.2, ease, clearProps: 'all' });
+      gsap.from('[role="tablist"]', { y: 16, autoAlpha: 0, duration: 0.45, delay: 0.4, ease, clearProps: 'all' });
+      gsap.from('.crm-banner', { y: 16, autoAlpha: 0, duration: 0.45, delay: 0.55, ease, clearProps: 'all' });
+      gsap.from('[data-animate="kpi"]', { y: 30, autoAlpha: 0, duration: 0.55, stagger: 0.08, delay: 0.7, ease, clearProps: 'all' });
+      gsap.from('#panel-overview [data-animate="card"]', { y: 34, autoAlpha: 0, duration: 0.6, stagger: 0.12, delay: 0.95, ease, clearProps: 'all' });
+      gsap.delayedCall(1.1, animateCounters);
+    }
+
+    /* ---------- Инициализация ---------- */
+    const tabsValid = (id: string): boolean => tabButtons.some((b) => b.dataset.tab === id);
+    renderChannels();
+    renderFeed();
+    renderOrders();
+    renderBoard();
+    renderActiveRepairs();
+    const fromHash = location.hash.replace('#', '');
+    setTab(tabsValid(fromHash) ? fromHash : state.tab, false, false);
+    if (!reduceMotion) entrance();
+  </script>
+</BaseLayout>
