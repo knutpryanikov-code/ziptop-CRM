@@ -3,18 +3,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const SITE = 'https://зиптоп.рф';
 
+const ICONS = {
+  banknote: '<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+  bag: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  package: '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+  grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  plug: '<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+};
+
 const kpis = [
-  { label: 'Выручка (в работе)', value: '29 300 ₽' },
-  { label: 'Заказы', value: '8' },
-  { label: 'Активные ремонты', value: '4', id: 'kpi-repairs' },
-  { label: 'SKU на витрине', value: '1 436' },
+  { label: 'Выручка (в работе)', value: '29 300 ₽', icon: ICONS.banknote },
+  { label: 'Заказы', value: '8', icon: ICONS.bag },
+  { label: 'Активные ремонты', value: '4', id: 'kpi-repairs', icon: ICONS.wrench },
+  { label: 'SKU на витрине', value: '1 436', icon: ICONS.package },
 ];
 
 const tabs = [
-  { id: 'overview', label: 'Обзор' },
-  { id: 'orders', label: 'Заказы' },
-  { id: 'repairs', label: 'Ремонты' },
-  { id: 'integrations', label: 'Интеграции' },
+  { id: 'overview', label: 'Обзор', icon: ICONS.grid },
+  { id: 'orders', label: 'Заказы', icon: ICONS.bag },
+  { id: 'repairs', label: 'Ремонты', icon: ICONS.wrench },
+  { id: 'integrations', label: 'Интеграции', icon: ICONS.plug },
 ];
 
 const crmData = {
@@ -53,6 +62,11 @@ const crmData = {
 };
 ---
 <BaseLayout title="ЗИПТОП — CRM и учёт экосистемы">
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="animate-blob absolute -top-48 left-1/2 h-[30rem] w-[46rem] -translate-x-1/2 rounded-full bg-orange-400/15 blur-3xl"></div>
+    <div class="animate-blob animation-delay-2000 absolute -right-40 top-1/3 h-[24rem] w-[24rem] rounded-full bg-amber-300/10 blur-3xl"></div>
+    <div class="animate-blob animation-delay-4000 absolute -left-40 top-2/3 h-[20rem] w-[20rem] rounded-full bg-orange-300/10 blur-3xl"></div>
+  </div>
   <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
     <div class="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
       <a href={`${SITE}/`} class="flex items-center gap-2.5" aria-label="ЗИПТОП — на главную сайта">
@@ -78,8 +92,8 @@ const crmData = {
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
     <div class="flex flex-wrap items-end justify-between gap-6">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600">ЗИПТОП · Платформа</p>
-        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">CRM и учёт экосистемы</h1>
+        <p class="crm-eyebrow text-xs font-bold uppercase tracking-[0.25em] text-orange-600">ЗИПТОП · Платформа</p>
+        <h1 class="crm-title mt-2 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">CRM и учёт <span class="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">экосистемы</span></h1>
       </div>
       <div class="flex rounded-full bg-slate-100 p-1" role="tablist" aria-label="Разделы CRM">
         {tabs.map((tab) => (
@@ -91,15 +105,15 @@ const crmData = {
             aria-selected={tab.id === 'overview' ? 'true' : 'false'}
             data-tab={tab.id}
             class:list={[
-              'rounded-full px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500',
-              tab.id === 'overview' ? 'bg-slate-900 text-white shadow' : 'text-slate-600 hover:text-slate-900',
+              'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95',
+              tab.id === 'overview' ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/20' : 'text-slate-600 hover:text-slate-900',
             ]}
-          >{tab.label}</button>
+          ><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={tab.icon} />{tab.label}</button>
         ))}
       </div>
     </div>
 
-    <p class="mt-6 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
+    <p class="crm-banner mt-6 flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
       <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
       <span>Рабочий стол менеджера в демо-режиме: изменения (статусы заказов, ремонты, каналы уведомлений) сохраняются в этом браузере. Интеграция с МойСклад по API уже подключена к каталогу сайта; боевые подключения Авито, Ozon, WB, Яндекс Маркет и мессенджеров выполняются на сервере по API-ключам.</span>
     </p>
@@ -108,15 +122,19 @@ const crmData = {
     <section id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-panel="overview" class="mt-8">
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((kpi) => (
-          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="kpi">
+            <span class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={kpi.icon} />
+            </span>
             <p class="text-sm text-slate-500">{kpi.label}</p>
-            <p class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950" id={kpi.id}>{kpi.value}</p>
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-slate-950" id={kpi.id} data-counter>{kpi.value}</p>
+            <span class="absolute inset-x-0 bottom-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-orange-500 to-amber-400 transition-transform duration-300 group-hover:scale-x-100"></span>
           </div>
         ))}
       </div>
 
       <div class="mt-6 grid gap-6 lg:grid-cols-2">
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg" data-animate="card">
           <h2 class="flex items-center gap-2 text-lg font-bold text-slate-950">
             <svg class="h-5 w-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
             Уведомления в мессенджеры
@@ -125,7 +143,7 @@ const crmData = {
           <ol class="mt-5 space-y-4" id="notifications-feed"></ol>
         </div>
 
-        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg" data-animate="card">
           <div class="flex items-center justify-between">
             <h2 class="flex items-center gap-2 text-lg font-bold text-slate-950">
               <svg class="h-5 w-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
@@ -174,7 +192,7 @@ const crmData = {
     <!-- Интеграции -->
     <section id="panel-integrations" role="tabpanel" aria-labelledby="tab-integrations" data-panel="integrations" class="mt-8" hidden>
       <div class="grid gap-6 lg:grid-cols-2">
-        <article class="rounded-3xl bg-slate-950 p-7 text-white shadow-lg">
+        <article class="rounded-3xl bg-slate-950 p-7 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-900/30" data-animate="card">
           <div class="flex items-start justify-between">
             <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
             <span class="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-400">
@@ -191,7 +209,7 @@ const crmData = {
           </div>
         </article>
 
-        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
           <div class="flex items-start justify-between">
             <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">OZON · WB · Я.Маркет</span>
@@ -201,7 +219,7 @@ const crmData = {
           <a href={`${SITE}/market/`} class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-orange-600 transition hover:text-orange-700">Открыть генератор ↗</a>
         </article>
 
-        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
           <div class="flex items-start justify-between">
             <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Avito API</span>
@@ -215,7 +233,7 @@ const crmData = {
           </ul>
         </article>
 
-        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+        <article class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card">
           <div class="flex items-start justify-between">
             <svg class="h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Telegram · MAX · WhatsApp</span>
@@ -281,6 +299,8 @@ const crmData = {
   <script id="crm-data" type="application/json" set:html={JSON.stringify(crmData)}></script>
 
   <script>
+    import { gsap } from 'gsap';
+
     interface CrmOrder { id: string; date: string; client: string; item: string; channel: string; sum: string; stage: number }
     interface CrmRepair { id: string; client: string; device: string; problem: string; part: string; master: string; stage: number }
     interface CrmNotification { time: string; channel: string; text: string }
@@ -321,6 +341,8 @@ const crmData = {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
     };
 
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     const orderBadge = [
       'bg-orange-100 text-orange-700',
       'bg-sky-100 text-sky-700',
@@ -330,6 +352,7 @@ const crmData = {
     ];
     const stageColor = ['bg-slate-300', 'bg-amber-400', 'bg-orange-500', 'bg-sky-500', 'bg-emerald-500'];
     const stageBorder = ['border-slate-300', 'border-amber-400', 'border-orange-500', 'border-sky-500', 'border-emerald-500'];
+    const stageTint = ['bg-gradient-to-br from-slate-50 to-white', 'bg-gradient-to-br from-amber-50 to-white', 'bg-gradient-to-br from-orange-50 to-white', 'bg-gradient-to-br from-sky-50 to-white', 'bg-gradient-to-br from-emerald-50 to-white'];
     const channelBadge: Record<string, string> = {
       Telegram: 'bg-sky-100 text-sky-700',
       WhatsApp: 'bg-emerald-100 text-emerald-700',
@@ -343,15 +366,19 @@ const crmData = {
     const tabButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
     const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-panel]'));
 
-    function setTab(id: string, updateHash = true): void {
+    function setTab(id: string, updateHash = true, animate = true): void {
       state.tab = id;
-      const tabBase = 'rounded-full px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500';
+      const tabBase = 'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95';
       tabButtons.forEach((btn) => {
         const active = btn.dataset.tab === id;
         btn.setAttribute('aria-selected', String(active));
-        btn.className = active ? `${tabBase} bg-slate-900 text-white shadow` : `${tabBase} text-slate-600 hover:text-slate-900`;
+        btn.className = active ? `${tabBase} bg-slate-900 text-white shadow-lg shadow-slate-900/20` : `${tabBase} text-slate-600 hover:text-slate-900`;
       });
       panels.forEach((p) => { p.hidden = p.dataset.panel !== id; });
+      const activePanel = panels.find((p) => p.dataset.panel === id);
+      if (activePanel && animate && !reduceMotion) {
+        gsap.fromTo(activePanel, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out', clearProps: 'all' });
+      }
       if (updateHash) history.replaceState(null, '', `#${id}`);
       save();
     }
@@ -380,7 +407,7 @@ const crmData = {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.setAttribute('aria-pressed', String(on));
-        btn.className = `rounded-full px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${
+        btn.className = `rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 active:scale-95 ${
           on ? 'bg-sky-100 text-sky-700 ring-1 ring-sky-300 hover:bg-sky-200' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
         }`;
         btn.textContent = `${ch.label} ${on ? 'вкл' : 'выкл'}`;
@@ -421,13 +448,13 @@ const crmData = {
       if (!ordersBody) return;
       ordersBody.innerHTML = data.orders.map((o) => {
         const st = state.orders[o.id] ?? o.stage;
-        return `<tr class="border-b border-slate-100 last:border-0">
+        return `<tr data-order-id="${o.id}" class="border-b border-slate-100 transition-colors last:border-0 hover:bg-orange-50/40">
           <td class="px-6 py-4"><p class="font-bold text-slate-900">${esc(o.id)}</p><p class="mt-0.5 text-xs text-slate-400">${esc(o.date)}</p></td>
           <td class="px-4 py-4 text-slate-700">${esc(o.client)}</td>
           <td class="max-w-[260px] truncate px-4 py-4 text-slate-600" title="${esc(o.item)}">${esc(o.item)}</td>
           <td class="px-4 py-4"><span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">${esc(o.channel)}</span></td>
           <td class="px-4 py-4 font-bold text-slate-900">${esc(o.sum)}</td>
-          <td class="px-4 py-4"><span class="rounded-full px-3 py-1 text-xs font-semibold ${orderBadge[st]}">${esc(data.flow[st])}</span></td>
+          <td class="px-4 py-4"><span data-badge class="inline-block rounded-full px-3 py-1 text-xs font-semibold ${orderBadge[st]}">${esc(data.flow[st])}</span></td>
           <td class="whitespace-nowrap px-6 py-4">${moveButton(o.id, 'order', -1, st === 0)}${moveButton(o.id, 'order', 1, st === data.flow.length - 1)}</td>
         </tr>`;
       }).join('');
@@ -437,7 +464,7 @@ const crmData = {
     const board = document.getElementById('kanban-board');
     function repairCard(r: CrmRepair): string {
       const st = state.repairs[r.id] ?? r.stage;
-      return `<article class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} bg-white p-4 shadow-sm">
+      return `<article data-repair-id="${r.id}" class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} ${stageTint[st]} p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
         <p class="text-sm font-bold text-slate-900">${esc(r.id)} · ${esc(r.client)}</p>
         <p class="mt-0.5 text-xs font-medium text-slate-500">${esc(r.device)}</p>
         <p class="mt-2 text-xs leading-5 text-slate-500">${esc(r.problem)} · ${esc(r.part)}</p>
@@ -448,7 +475,7 @@ const crmData = {
         </div>
       </article>`;
     }
-    function renderBoard(): void {
+    function renderBoard(animate = false): void {
       if (!board) return;
       board.innerHTML = data.stages.map((stage, i) => {
         const items = data.repairs.filter((r) => (state.repairs[r.id] ?? r.stage) === i);
@@ -460,6 +487,9 @@ const crmData = {
           <div class="space-y-3">${items.map(repairCard).join('') || '<p class="px-2 pb-2 text-xs text-slate-400">Нет ремонтов</p>'}</div>
         </section>`;
       }).join('');
+      if (animate && !reduceMotion) {
+        gsap.from('#kanban-board article', { y: 16, autoAlpha: 0, scale: 0.96, duration: 0.35, stagger: 0.045, ease: 'back.out(1.6)', clearProps: 'all' });
+      }
     }
 
     /* ---------- Ремонты в работе (обзор) + KPI ---------- */
@@ -469,7 +499,7 @@ const crmData = {
       if (box) {
         box.innerHTML = active.map((r) => {
           const st = state.repairs[r.id] ?? r.stage;
-          return `<li class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} p-4">
+          return `<li class="rounded-2xl border border-slate-200 border-l-4 ${stageBorder[st]} ${stageTint[st]} p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
             <div class="flex items-center justify-between gap-3">
               <p class="text-sm font-bold text-slate-900">${esc(r.id)} · ${esc(r.device)}</p>
               <span class="shrink-0 text-xs font-medium text-slate-400">${esc(data.stages[st])}</span>
@@ -495,11 +525,45 @@ const crmData = {
       if (kind === 'order') {
         state.orders[id] = Math.min(data.flow.length - 1, Math.max(0, (state.orders[id] ?? 0) + dir));
         save(); renderOrders();
+        if (!reduceMotion) {
+          const badge = document.querySelector(`tr[data-order-id="${id}"] [data-badge]`);
+          if (badge) gsap.fromTo(badge, { scale: 0.7 }, { scale: 1, duration: 0.45, ease: 'back.out(3)', clearProps: 'all' });
+        }
       } else {
         state.repairs[id] = Math.min(data.stages.length - 1, Math.max(0, (state.repairs[id] ?? 0) + dir));
-        save(); renderBoard(); renderActiveRepairs();
+        save(); renderBoard(true); renderActiveRepairs();
       }
     });
+
+    /* ---------- Входные анимации и счётчики ---------- */
+    function animateCounters(): void {
+      document.querySelectorAll<HTMLElement>('[data-counter]').forEach((el) => {
+        const finalText = el.textContent ?? '';
+        const match = finalText.match(/[\d\s ]+/);
+        if (!match) return;
+        const target = parseInt(match[0].replace(/[^\d]/g, ''), 10);
+        const suffix = finalText.slice(match[0].length).trimStart();
+        if (Number.isNaN(target)) return;
+        const counter = { v: 0 };
+        gsap.to(counter, {
+          v: target,
+          duration: 1.4,
+          ease: 'power2.out',
+          onUpdate: () => { el.textContent = `${Math.round(counter.v).toLocaleString('ru-RU')}${suffix ? ` ${suffix}` : ''}`; },
+        });
+      });
+    }
+
+    function entrance(): void {
+      const ease = 'power3.out';
+      gsap.from('header', { y: -32, autoAlpha: 0, duration: 0.5, ease, clearProps: 'all' });
+      gsap.from('.crm-eyebrow, .crm-title', { y: 26, autoAlpha: 0, duration: 0.55, stagger: 0.1, delay: 0.2, ease, clearProps: 'all' });
+      gsap.from('[role="tablist"]', { y: 16, autoAlpha: 0, duration: 0.45, delay: 0.4, ease, clearProps: 'all' });
+      gsap.from('.crm-banner', { y: 16, autoAlpha: 0, duration: 0.45, delay: 0.55, ease, clearProps: 'all' });
+      gsap.from('[data-animate="kpi"]', { y: 30, autoAlpha: 0, duration: 0.55, stagger: 0.08, delay: 0.7, ease, clearProps: 'all' });
+      gsap.from('#panel-overview [data-animate="card"]', { y: 34, autoAlpha: 0, duration: 0.6, stagger: 0.12, delay: 0.95, ease, clearProps: 'all' });
+      gsap.delayedCall(1.1, animateCounters);
+    }
 
     /* ---------- Инициализация ---------- */
     const tabsValid = (id: string): boolean => tabButtons.some((b) => b.dataset.tab === id);
@@ -509,6 +573,7 @@ const crmData = {
     renderBoard();
     renderActiveRepairs();
     const fromHash = location.hash.replace('#', '');
-    setTab(tabsValid(fromHash) ? fromHash : state.tab, false);
+    setTab(tabsValid(fromHash) ? fromHash : state.tab, false, false);
+    if (!reduceMotion) entrance();
   </script>
 </BaseLayout>

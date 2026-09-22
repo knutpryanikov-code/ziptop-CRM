@@ -2,5 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f7f8fc; }
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #172033; background: #f7f8fa; }
 body { margin: 0; }
+
+::selection { background: rgba(249, 115, 22, 0.25); }
+
+html { scroll-behavior: smooth; }
+
+@keyframes blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -24px) scale(1.06); }
+  66% { transform: translate(-24px, 20px) scale(0.95); }
+}
+
+.animate-blob { animation: blob-float 14s ease-in-out infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; border: 2px solid #f7f8fa; }
+::-webkit-scrollbar-thumb:hover { background: #f97316; }
