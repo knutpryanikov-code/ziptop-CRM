@@ -28,6 +28,41 @@ Workflow `.github/workflows/deploy.yml` запускается при push в `m
 
 Перед изменением pipeline убедитесь, что deploy prefix остаётся `crm`.
 
+## Backend: Yandex Cloud Functions
+
+Добавлять backend-код в `functions/<function-name>/`. Каждая функция должна собираться и публиковаться независимо: `index.mjs` экспортирует `handler`, рядом находится собственный `package.json`, а в архив не попадают frontend CRM и секреты.
+
+1. Один раз создать функцию (имя — строчные латинские буквы, цифры и дефисы):
+
+   ```bash
+   yc serverless function create --name ziptop-crm-api --folder-id <folder-id>
+   ```
+
+2. Собрать чистый production-архив из директории функции. Зависимости устанавливать во временную папку; исключать `.env`, тесты, sourcemap-файлы и `node_modules/.cache`.
+
+3. Опубликовать новую версию с явными runtime, handler, памятью и timeout:
+
+   ```bash
+   yc serverless function version create \
+     --function-name ziptop-crm-api \
+     --runtime nodejs22 \
+     --entrypoint index.handler \
+     --memory 256m \
+     --execution-timeout 30s \
+     --source-path ./function.zip \
+     --service-account-id <runtime-service-account-id>
+   ```
+
+4. Проверить публикацию: `yc serverless function version list --function-name ziptop-crm-api`. HTTP API gateway или invoke URL добавлять только после определения API-контракта и модели доступа.
+
+### Безопасность функций и CI
+
+- Разделять service account для **деплоя** и для **runtime**. Runtime-аккаунту выдавать только права на вызываемые им сервисы (например, `storage.viewer` или `storage.uploader` для bucket).
+- GitHub-аккаунту деплоя нужны `functions.admin` или эквивалентные минимальные права для создания версий. Текущий `zipstop-sa` настроен только для загрузки статического сайта; не использовать его для публикации функций без отдельного IAM-изменения.
+- JSON-ключи и параметры окружения хранить в GitHub Actions secrets. Пароли БД, API-ключи и JWT-секреты не помещать в environment variables функции: использовать Yandex Lockbox или другое хранилище секретов и выдавать runtime-аккаунту только read-доступ.
+- Frontend и backend публиковать разными GitHub Actions jobs. Изменение CRM-интерфейса не должно создавать версию функции. Изменение функции должно запускать её тесты, собирать чистый ZIP, публиковать его и выполнять health check.
+- IDs функций, cloud/folder IDs, service-account IDs и публичные invoke-права хранить в deployment-конфигурации или GitHub variables, а не в исходном коде. Не делать CRM-функции публичными по умолчанию.
+
 ## Разработка
 
 - Dev-сервер: `astro dev --background`; управление: `astro dev status`, `astro dev logs`, `astro dev stop`.
