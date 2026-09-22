@@ -32,5 +32,6 @@ jobs:
           bucket: xn--g1acsdbq.xn--p1ai
           prefix: crm
           root: dist
+          include: '**/*'
           skip-unchanged: true
           fail-on-error: true
