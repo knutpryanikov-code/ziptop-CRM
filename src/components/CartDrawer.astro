@@ -1,0 +1,37 @@
+<div id="cart-drawer" class="pointer-events-none fixed inset-0 z-50 opacity-0 transition-opacity duration-200" aria-hidden="true">
+  <div class="absolute inset-0 bg-slate-950/40" data-cart-close></div>
+  <section class="absolute right-0 top-0 flex h-full w-full max-w-md translate-x-full flex-col bg-white shadow-2xl transition-transform duration-200" role="dialog" aria-modal="true" aria-label="Корзина">
+    <header class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+      <h2 class="text-lg font-extrabold text-slate-950">Корзина <span data-cart-count class="ml-1 rounded-full bg-orange-100 px-2 py-0.5 text-sm text-orange-700">0</span></h2>
+      <button type="button" class="flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-950" data-cart-close aria-label="Закрыть корзину">×</button>
+    </header>
+    <div class="flex-1 overflow-y-auto p-5">
+      <div data-cart-empty class="py-16 text-center"><p class="text-lg font-bold text-slate-900">Ваша корзина пуста</p><p class="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">Добавьте запчасти из каталога, чтобы оформить заказ.</p><a href="/market" class="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-orange-600">Перейти в каталог</a></div>
+      <div data-cart-items class="space-y-3"></div>
+    </div>
+    <footer data-cart-footer class="hidden border-t border-slate-200 p-5"><div class="flex justify-between text-sm text-slate-500"><span>Товары (<span data-cart-total-qty>0</span> шт.)</span><b data-cart-total class="text-base text-slate-950">0 ₽</b></div><a href="/market" class="mt-4 flex min-h-11 items-center justify-center rounded-full bg-orange-600 px-5 text-sm font-bold text-white transition hover:bg-orange-700">Оформить заказ в каталоге</a><button type="button" data-cart-clear class="mt-3 w-full text-sm font-semibold text-slate-500 transition hover:text-red-600">Очистить корзину</button></footer>
+  </section>
+</div>
+
+<script>
+  type CartItem = { sku: string; name: string; price: number; image: string; quantity: number };
+  const storageKey = 'ziptop_cart';
+  const drawer = document.getElementById('cart-drawer');
+  const panel = drawer?.querySelector('section');
+  const formatter = new Intl.NumberFormat('ru-RU');
+  const items = (): CartItem[] => { try { return JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch { return []; } };
+  const save = (next: CartItem[]) => { localStorage.setItem(storageKey, JSON.stringify(next)); render(); };
+  const render = () => {
+    const cart = items(); const quantity = cart.reduce((total, item) => total + item.quantity, 0); const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((element) => { element.textContent = String(quantity); });
+    const list = drawer?.querySelector<HTMLElement>('[data-cart-items]'); const empty = drawer?.querySelector<HTMLElement>('[data-cart-empty]'); const footer = drawer?.querySelector<HTMLElement>('[data-cart-footer]');
+    if (!list || !empty || !footer) return;
+    list.replaceChildren(); empty.classList.toggle('hidden', cart.length > 0); footer.classList.toggle('hidden', cart.length === 0);
+    cart.forEach((item) => { const row = document.createElement('div'); row.className = 'flex gap-3 rounded-xl border border-slate-200 p-3'; const image = document.createElement('img'); image.src = item.image; image.alt = ''; image.className = 'h-16 w-16 rounded-lg object-contain outline outline-1 outline-black/10'; const content = document.createElement('div'); content.className = 'min-w-0 flex-1'; const name = document.createElement('p'); name.className = 'line-clamp-2 text-sm font-bold text-slate-900'; name.textContent = item.name; const price = document.createElement('p'); price.className = 'mt-1 text-sm font-semibold text-slate-700'; price.textContent = `${formatter.format(item.price)} ₽`; const controls = document.createElement('div'); controls.className = 'mt-2 flex items-center gap-2'; ['−', '+'].forEach((symbol) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 font-bold transition hover:border-orange-400 hover:text-orange-600'; button.textContent = symbol; button.onclick = () => { const next = items().map((entry) => entry.sku === item.sku ? { ...entry, quantity: entry.quantity + (symbol === '+' ? 1 : -1) } : entry).filter((entry) => entry.quantity > 0); save(next); }; controls.append(button); }); const count = document.createElement('span'); count.className = 'w-5 text-center text-sm font-bold'; count.textContent = String(item.quantity); controls.append(count); content.append(name, price, controls); row.append(image, content); list.append(row); });
+    drawer?.querySelectorAll<HTMLElement>('[data-cart-total-qty]').forEach((element) => { element.textContent = String(quantity); }); drawer?.querySelectorAll<HTMLElement>('[data-cart-total]').forEach((element) => { element.textContent = `${formatter.format(total)} ₽`; });
+  };
+  const open = () => { drawer?.classList.remove('pointer-events-none', 'opacity-0'); panel?.classList.remove('translate-x-full'); drawer?.setAttribute('aria-hidden', 'false'); render(); };
+  const close = () => { drawer?.classList.add('pointer-events-none', 'opacity-0'); panel?.classList.add('translate-x-full'); drawer?.setAttribute('aria-hidden', 'true'); };
+  document.addEventListener('click', (event) => { const target = event.target as HTMLElement; if (target.closest('[data-cart-toggle]')) { event.preventDefault(); open(); return; } if (target.closest('[data-cart-close]')) close(); if (target.closest('[data-cart-clear]')) save([]); const button = target.closest<HTMLElement>('[data-add-to-cart]'); if (button) { const sku = button.dataset.sku; const name = button.dataset.name; const price = Number(button.dataset.price); if (!sku || !name || !price) return; const cart = items(); const existing = cart.find((item) => item.sku === sku); if (existing) existing.quantity += 1; else cart.push({ sku, name, price, image: button.dataset.image || '', quantity: 1 }); save(cart); open(); } });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); }); window.addEventListener('storage', render); render();
+</script>

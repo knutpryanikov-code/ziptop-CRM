@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeCatalog from '../components/HomeCatalog.astro';
 
 const CATEGORIES = [
   { label: 'Стиральные машины', count: '212 позиций', icon: '<rect width="18" height="18" x="3" y="3" rx="3"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="2"/><path d="M7 6.5h.01M10 6.5h.01"/>' },
@@ -12,20 +13,9 @@ const CATEGORIES = [
   { label: 'Кофемашины', count: '17 позиций', icon: '<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/><path d="M7 2v2M11 2v2M15 2v2"/>' },
 ];
 
-const HITS = [
-  { name: 'ТЭН 1900W с датчиком СМА Samsung', art: 'WM1009SZw', price: '1 350 ₽', cat: 'Стиральные машины', icon: '<path d="M4 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M4 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>' },
-  { name: 'Насос слива Askoll 30W', art: 'PMP-ASK-01', price: '1 890 ₽', cat: 'Стиральные машины', icon: '<circle cx="12" cy="12" r="8"/><path d="M12 4v4M12 16v4M4 12h4M16 12h4"/>' },
-  { name: 'Манжета люка СМА Samsung DC64-00563B', art: 'DC64-00563B', price: '2 450 ₽', cat: 'Стиральные машины', icon: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>' },
-  { name: 'Амортизатор СМА 100N (пара)', art: 'AMO-100N-2', price: '1 100 ₽', cat: 'Стиральные машины', icon: '<path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/>' },
-  { name: 'Прессостат уровня воды', art: 'PRS-LEV-01', price: '1 240 ₽', cat: 'Стиральные машины', icon: '<circle cx="12" cy="12" r="8"/><path d="M9 12a3 3 0 0 1 6 0M12 12v6"/>' },
-  { name: 'Ремень 1195 J5 ELAST', art: 'BLT-1195J5', price: '480 ₽', cat: 'Стиральные машины', icon: '<ellipse cx="12" cy="12" rx="9" ry="5"/><ellipse cx="12" cy="12" rx="4.5" ry="2"/>' },
-  { name: 'Компрессор GMCC холодильника', art: 'CMP-GMCC-01', price: '7 800 ₽', cat: 'Холодильники', icon: '<rect width="14" height="10" x="5" y="7" rx="2"/><path d="M9 7V4h6v3M12 17v4"/>' },
-  { name: 'Магнетрон СВЧ 900W', art: 'MGN-900-01', price: '2 150 ₽', cat: 'Микроволновые печи', icon: '<rect width="14" height="12" x="5" y="6" rx="2"/><path d="M9 6V3M15 6V3M12 18v3"/>' },
-];
-
 const BRANDS = ['BOSCH', 'SAMSUNG', 'LG', 'INDESIT', 'BEKO', 'ELECTROLUX', 'ATLANT', 'ZANUSSI', 'WHIRLPOOL', 'CANDY', 'GORENJE', 'SIEMENS', 'HAIER'];
 ---
-<BaseLayout title="ЗИПТОП — каталог запчастей для бытовой техники | Новосибирск" active="catalog">
+<BaseLayout title="ЗИПТОП — каталог запчастей для бытовой техники | Новосибирск" active="home">
   <!-- Hero -->
   <section class="bg-slate-950 text-white">
     <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-20">
@@ -103,29 +93,7 @@ const BRANDS = ['BOSCH', 'SAMSUNG', 'LG', 'INDESIT', 'BEKO', 'ELECTROLUX', 'ATLA
     </div>
   </section>
 
-  <!-- Хиты -->
-  <section class="mx-auto max-w-7xl px-4 pt-14 sm:px-6" id="hits">
-    <h2 class="text-3xl font-extrabold tracking-tight text-slate-950" data-animate>Ходовые запчасти</h2>
-    <p class="mt-2 text-sm text-slate-500" data-animate>Самые востребованные позиции недели — всегда на складе в Новосибирске</p>
-    <p id="hits-empty" class="mt-6 hidden rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">По запросу ничего не найдено. Позвоните <a class="font-semibold text-orange-600" href="tel:+79537777089">+7 953 777-70-89</a> — подберём вручную.</p>
-    <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {HITS.map((h) => (
-        <article class="group flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-animate="card" data-hit={`${h.name} ${h.art} ${h.cat}`.toLowerCase()}>
-          <span class="flex h-24 items-center justify-center rounded-2xl bg-slate-50 text-slate-300 transition group-hover:bg-orange-50 group-hover:text-orange-400">
-            <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={h.icon} />
-          </span>
-          <p class="mt-4 flex-1 text-sm font-bold leading-5 text-slate-900">{h.name}</p>
-          <p class="mt-1 text-xs text-slate-400">Арт. {h.art}</p>
-          <div class="mt-3 flex items-center justify-between">
-            <span class="text-lg font-extrabold text-slate-950">{h.price}</span>
-            <button type="button" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white transition hover:bg-orange-500" aria-label={`В корзину: ${h.name}`}>
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-            </button>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
+  <HomeCatalog />
 
   <!-- AI CTA -->
   <section class="mx-auto max-w-7xl px-4 pt-14 sm:px-6">
@@ -163,27 +131,12 @@ const BRANDS = ['BOSCH', 'SAMSUNG', 'LG', 'INDESIT', 'BEKO', 'ELECTROLUX', 'ATLA
       });
     }
 
-    /* Поиск по ходовым позициям */
     const form = document.getElementById('hero-search');
     const qInput = document.getElementById('hero-q') as HTMLInputElement | null;
-    const empty = document.getElementById('hits-empty');
-    function filterHits(): void {
-      const q = (qInput?.value ?? '').trim().toLowerCase();
-      let visible = 0;
-      document.querySelectorAll<HTMLElement>('[data-hit]').forEach((card) => {
-        const ok = !q || (card.dataset.hit ?? '').includes(q);
-        card.classList.toggle('hidden', !ok);
-        if (ok) visible += 1;
-      });
-      empty?.classList.toggle('hidden', visible > 0);
-    }
     form?.addEventListener('submit', (e) => {
       e.preventDefault();
-      filterHits();
-      document.getElementById('hits')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      const query = qInput?.value.trim();
+      location.href = query ? `/market/?q=${encodeURIComponent(query)}` : '/market';
     });
-    qInput?.addEventListener('input', filterHits);
-    const initialQ = new URLSearchParams(location.search).get('q');
-    if (initialQ && qInput) { qInput.value = initialQ; filterHits(); }
   </script>
 </BaseLayout>

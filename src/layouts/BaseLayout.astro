@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CartDrawer from '../components/CartDrawer.astro';
 
 interface Props {
   title: string;
@@ -14,6 +15,7 @@ const {
 } = Astro.props;
 
 const MENU = [
+  { id: 'home', label: 'Главная', href: '/' },
   { id: 'catalog', label: 'Каталог', href: '/market' },
   { id: 'scheme', label: 'Взрыв-схемы', href: '/scheme/' },
   { id: 'ai', label: 'AI-подбор', href: '/ai/' },
@@ -57,14 +59,19 @@ const MENU = [
               : <a class="transition hover:text-orange-600" href={item.href}>{item.label}</a>
           ))}
         </nav>
+        <span data-city-label class="hidden items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-slate-500 xl:flex" aria-live="polite">
+          <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+          Работаем по всей России
+        </span>
         <div class="ml-auto flex shrink-0 items-center gap-3">
           <a href="tel:+79537777089" class="hidden items-center gap-2 whitespace-nowrap text-sm font-semibold text-slate-800 transition hover:text-orange-600 md:flex">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             +7 953 777-70-89
           </a>
-          <a href="/" class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition hover:bg-orange-500 hover:shadow-orange-500/30" aria-label="Корзина">
+          <button type="button" data-cart-toggle class="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition hover:bg-orange-500 hover:shadow-orange-500/30" aria-label="Корзина">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-          </a>
+            <span data-cart-count class="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-orange-500 px-1 text-[10px] font-extrabold text-white">0</span>
+          </button>
           <button type="button" id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:border-orange-500 hover:text-orange-600 xl:hidden" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
@@ -72,6 +79,7 @@ const MENU = [
       </div>
       <nav id="mobile-menu" class="hidden border-t border-slate-100 bg-white px-4 py-3 xl:hidden" aria-label="Мобильная навигация">
         <ul class="grid gap-1 text-sm font-medium text-slate-700">
+          <li><span data-city-label class="flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-2.5 text-xs font-semibold text-orange-700" aria-live="polite"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Работаем по всей России</span></li>
           {MENU.map((item) => (
             <li>
               {item.id === active
@@ -135,6 +143,8 @@ const MENU = [
       </div>
     </footer>
 
+    <CartDrawer />
+
     <script>
       const toggle = document.getElementById('menu-toggle');
       const menu = document.getElementById('mobile-menu');
@@ -143,6 +153,40 @@ const MENU = [
         const open = menu.classList.toggle('hidden') === false;
         toggle.setAttribute('aria-expanded', String(open));
       });
+
+      type LocationCache = { city: string; countryCode: string; expiresAt: number };
+      const locationCacheKey = 'ziptop-location-v1';
+      const fallback = 'Работаем по всей России';
+      const updateLocationText = (city = '', countryCode = '') => {
+        const normalized = city.trim();
+        const isRussia = countryCode.toUpperCase() === 'RU' && normalized.length > 0;
+        const headerText = isRussia ? `Ваш город: ${normalized}` : fallback;
+        document.querySelectorAll<HTMLElement>('[data-city-label]').forEach((element) => { element.lastChild!.textContent = headerText; });
+        const names = isRussia ? [normalized] : [];
+        for (const serviceCity of ['Новосибирск', 'Омск']) {
+          if (!names.some((name) => name.localeCompare(serviceCity, 'ru', { sensitivity: 'base' }) === 0)) names.push(serviceCity);
+        }
+        const coverage = isRussia ? `Работаем в ${names.join(', ')} и по всей России.` : `${fallback}.`;
+        document.querySelectorAll<HTMLElement>('[data-service-coverage]').forEach((element) => { element.textContent = coverage; });
+      };
+      try {
+        const cached = JSON.parse(localStorage.getItem(locationCacheKey) || 'null') as LocationCache | null;
+        if (cached && cached.expiresAt > Date.now()) {
+          updateLocationText(cached.city, cached.countryCode);
+        } else {
+          fetch('https://ipwho.is/?lang=ru', { signal: AbortSignal.timeout(4_000) })
+            .then((response) => response.ok ? response.json() : Promise.reject(new Error('Location lookup failed')))
+            .then((data: { success?: boolean; city?: string; country_code?: string }) => {
+              const city = data.success && data.country_code === 'RU' ? String(data.city || '').trim() : '';
+              const countryCode = city ? 'RU' : '';
+              localStorage.setItem(locationCacheKey, JSON.stringify({ city, countryCode, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1_000 }));
+              updateLocationText(city, countryCode);
+            })
+            .catch(() => updateLocationText());
+        }
+      } catch {
+        updateLocationText();
+      }
     </script>
   </body>
 </html>

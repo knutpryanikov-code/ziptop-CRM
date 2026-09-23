@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Регистрация магазина | ЗИПТОП">
+  <main class="bg-[radial-gradient(circle_at_90%_5%,rgba(255,237,213,.9),transparent_30%),#f7f8fa]">
+    <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[.85fr_1fr] lg:gap-20 lg:py-24">
+      <section class="lg:pt-10">
+        <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600">Для продавцов</p>
+        <h1 class="mt-4 max-w-xl text-4xl font-extrabold leading-tight tracking-tight text-slate-950 sm:text-5xl">Откройте магазин на ЗИПТОП</h1>
+        <p class="mt-6 max-w-lg text-base leading-7 text-slate-500">Оставьте контакты и ссылки на ваши площадки — поможем подключиться к маркетплейсу.</p>
+        <ol class="mt-8 space-y-3 text-sm font-semibold text-slate-600"><li class="flex items-center gap-3"><b class="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-xs text-white">1</b> Заявка</li><li class="flex items-center gap-3"><b class="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-xs text-white">2</b> Свяжемся</li><li class="flex items-center gap-3"><b class="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-xs text-white">3</b> Подключим магазин</li></ol>
+      </section>
+      <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 sm:p-9">
+        <form id="registration-form" class="space-y-5">
+          <div><h2 class="text-2xl font-extrabold tracking-tight text-slate-950">Заявка на подключение</h2><p class="mt-1 text-xs text-slate-500"><span class="text-orange-600">*</span> Обязательные поля</p></div>
+          <label class="grid gap-2 text-sm font-bold text-slate-700">Имя магазина <span class="sr-only">обязательное поле</span><input name="shopName" required maxlength="120" autocomplete="organization" placeholder="Доктор-Хаус" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label>
+          <label class="grid gap-2 text-sm font-bold text-slate-700">Имя латинницей <input name="shopSlug" required maxlength="60" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="doctor-haus" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label>
+          <fieldset class="grid gap-4 border-t border-slate-200 pt-5"><legend class="text-sm font-extrabold text-slate-950">Где уже продаёте</legend><label class="grid gap-2 text-sm font-bold text-slate-700">Магазин на Озон <span class="text-xs font-normal text-slate-400">если есть</span><input name="ozonUrl" type="url" maxlength="500" placeholder="https://www.ozon.ru/seller/..." class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label><label class="grid gap-2 text-sm font-bold text-slate-700">Какую систему для склада используете? <input name="warehouseSystem" maxlength="120" placeholder="МойСклад, 1С или другая" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label></fieldset>
+          <div class="grid gap-4 sm:grid-cols-2"><label class="grid gap-2 text-sm font-bold text-slate-700">Почта для связи <input name="email" type="email" required maxlength="254" autocomplete="email" placeholder="mail@example.ru" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label><label class="grid gap-2 text-sm font-bold text-slate-700">Телефон <input name="phone" type="tel" required minlength="7" maxlength="30" autocomplete="tel" placeholder="+7 999 123-45-67" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label></div>
+          <label class="grid gap-2 text-sm font-bold text-slate-700">В каком городе основной склад? <input name="warehouseCity" maxlength="120" autocomplete="address-level2" placeholder="Новосибирск" class="h-12 rounded-xl border border-slate-200 px-4 font-normal outline-none transition focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15" /></label>
+          <input class="absolute -left-[9999px]" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <p id="form-status" class="min-h-5 text-sm text-red-700" aria-live="polite"></p>
+          <button type="submit" class="flex min-h-12 w-full items-center justify-center rounded-full bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-orange-600 active:scale-[0.96]">Отправить заявку <span class="ml-2" aria-hidden="true">→</span></button>
+        </form>
+        <div id="registration-success" class="hidden py-12 text-center" aria-live="polite"><span class="inline-grid h-12 w-12 place-items-center rounded-full bg-emerald-100 text-2xl text-emerald-700">✓</span><h2 class="mt-5 text-2xl font-extrabold text-slate-950">Заявка отправлена</h2><p class="mt-2 text-slate-500">Мы свяжемся с вами в самое ближайшее время.</p><a href="/market" class="mt-6 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-orange-600">Открыть каталог</a></div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#registration-form'); const status = document.querySelector<HTMLElement>('#form-status'); const success = document.querySelector<HTMLElement>('#registration-success');
+    form?.addEventListener('submit', async (event) => { event.preventDefault(); if (!form.reportValidity()) return; const values = Object.fromEntries(new FormData(form).entries()); if (values.website) return; const button = form.querySelector<HTMLButtonElement>('button[type="submit"]'); if (!button) return; button.disabled = true; button.textContent = 'Отправляем…'; try { const response = await fetch('https://functions.yandexcloud.net/d4en7gltv9mfgjshurfs', { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body: JSON.stringify(values) }); const result = await response.json().catch(() => null); if (!response.ok || !result?.success) throw new Error(result?.message || 'Не удалось отправить заявку'); form.hidden = true; success?.classList.remove('hidden'); } catch (error) { if (status) status.textContent = error instanceof Error ? `${error.message}. Попробуйте ещё раз.` : 'Не удалось отправить заявку. Попробуйте ещё раз.'; button.disabled = false; button.textContent = 'Отправить заявку →'; } });
+  </script>
+</BaseLayout>
