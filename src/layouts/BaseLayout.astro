@@ -61,7 +61,7 @@ const MENU = [
         </nav>
         <span data-city-label class="hidden items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-slate-500 xl:flex" aria-live="polite">
           <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          Работаем по всей России
+          Ваш город: Новосибирск
         </span>
         <div class="ml-auto flex shrink-0 items-center gap-3">
           <a href="tel:+79537777089" class="hidden items-center gap-2 whitespace-nowrap text-sm font-semibold text-slate-800 transition hover:text-orange-600 md:flex">
@@ -79,7 +79,7 @@ const MENU = [
       </div>
       <nav id="mobile-menu" class="hidden border-t border-slate-100 bg-white px-4 py-3 xl:hidden" aria-label="Мобильная навигация">
         <ul class="grid gap-1 text-sm font-medium text-slate-700">
-          <li><span data-city-label class="flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-2.5 text-xs font-semibold text-orange-700" aria-live="polite"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Работаем по всей России</span></li>
+          <li><span data-city-label class="flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-2.5 text-xs font-semibold text-orange-700" aria-live="polite"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Новосибирск</span></li>
           {MENU.map((item) => (
             <li>
               {item.id === active
@@ -157,10 +157,11 @@ const MENU = [
       type LocationCache = { city: string; countryCode: string; expiresAt: number };
       const locationCacheKey = 'ziptop-location-v1';
       const fallback = 'Работаем по всей России';
+      const defaultCity = 'Новосибирск';
       const updateLocationText = (city = '', countryCode = '') => {
         const normalized = city.trim();
         const isRussia = countryCode.toUpperCase() === 'RU' && normalized.length > 0;
-        const headerText = isRussia ? `Ваш город: ${normalized}` : fallback;
+        const headerText = `${isRussia ? normalized : defaultCity}`;
         document.querySelectorAll<HTMLElement>('[data-city-label]').forEach((element) => { element.lastChild!.textContent = headerText; });
         const names = isRussia ? [normalized] : [];
         for (const serviceCity of ['Новосибирск', 'Омск']) {
