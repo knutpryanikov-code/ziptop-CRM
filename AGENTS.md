@@ -19,7 +19,7 @@
 - Astro base path — `/`.
 - Сайт публикуется в корень `s3://xn--g1acsdbq.xn--p1ai/`; устаревшие объекты прежнего сайта (вне `dist/`) удалять только отдельной подтверждённой операцией.
 - `npm run build` и `npm run build:prod` — сборка с base `/`.
-- `npm run deploy:prod` — build и загрузка через Yandex Cloud CLI.
+- `npm run deploy:prod` — legacy-скрипт build и загрузки через Yandex Cloud CLI; вручную его не запускать.
 
 ## CI/CD
 
@@ -39,8 +39,8 @@ Workflow `.github/workflows/deploy.yml` запускается при push в `m
 
    Production build должен завершиться без ошибок и создать `dist/` со ссылками от корня сайта.
 
-3. Для локальной публикации в авторизованном окружении выполнить `npm run deploy:prod`. Скрипт загружает объекты в корень `s3://xn--g1acsdbq.xn--p1ai/` (пустой `DEPLOY_PREFIX`); задавать другой префикс только для осознанного стейджинга.
-4. Обычная публикация выполняется автоматически после push в `main`; также workflow **Deploy site** можно запустить вручную в GitHub Actions. Он использует `YC_SA_JSON_CREDENTIALS` и ограниченный IAM-ролью `storage.uploader` аккаунт `zipstop-sa`.
+3. Никогда не публиковать сайт вручную: не запускать `npm run deploy:prod`, Yandex Cloud CLI upload-команды или ручной запуск workflow. Публикация разрешена только через GitHub Actions после отправки коммита в `main`.
+4. Для отправки обновлений использовать `git push --force-with-lease origin main` (push-with-lease), а не обычный `git push`. Workflow **Deploy site** запускается автоматически, использует `YC_SA_JSON_CREDENTIALS` и ограниченный IAM-ролью `storage.uploader` аккаунт `zipstop-sa`.
 5. После завершения workflow открыть `https://зиптоп.рф/` и проверить нужные страницы. HTML не кешируется надолго, но ассеты в `_astro/` могут иметь immutable cache: после изменения они должны получать новые хешированные имена.
 
 Не удалять объекты в bucket без необходимости. Если нужно удалить устаревший файл (например, оставшийся от прежнего сайта), сначала подтвердить точный object key и выполнить отдельную безопасную операцию: текущий CI загружает новые или изменённые файлы, но не очищает bucket.
