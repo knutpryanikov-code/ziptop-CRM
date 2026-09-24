@@ -7,6 +7,26 @@ const STEPS = [
   { n: '03', title: 'Ремонт и гарантия', text: 'Меняем деталь на месте, проверяем работу, даём гарантию до 1 года.' },
 ];
 
+const SN_STATS = [
+  { value: '5,000+', label: 'Сервисных центров' },
+  { value: '85', label: 'Регионов' },
+  { value: '4.7', label: 'Средний рейтинг' },
+  { value: '98%', label: 'Решённых случаев' },
+];
+
+const SN_REGIONS = ['Все регионы', 'Центральный', 'Северо-Западный', 'Южный', 'Приволжский', 'Уральский', 'Сибирский', 'Дальневосточный', 'Северо-Кавказский'];
+
+const SN_CENTERS = [
+  { n: 'СервисПро', city: 'Москва', region: 'Центральный', addr: 'ул. Ленина, 42', phone: '+7 (495) 123-45-67', rating: '4.9', reviews: 342, spec: ['Стиральные машины', 'Посудомоечные', 'Холодильники'], warranty: '12 мес', hours: '09:00–21:00', cert: true },
+  { n: 'РемонтБыт', city: 'Санкт-Петербург', region: 'Северо-Западный', addr: 'Невский пр., 108', phone: '+7 (812) 234-56-78', rating: '4.7', reviews: 189, spec: ['Стиральные машины', 'Сушильные'], warranty: '6 мес', hours: '10:00–20:00', cert: true },
+  { n: 'ТехМастер', city: 'Новосибирск', region: 'Сибирский', addr: 'Красный пр., 85', phone: '+7 (383) 345-67-89', rating: '4.8', reviews: 156, spec: ['Все типы', 'Платы управления'], warranty: '12 мес', hours: '09:00–20:00', cert: true },
+  { n: 'БытСервис', city: 'Екатеринбург', region: 'Уральский', addr: 'пр. Ленина, 50', phone: '+7 (343) 456-78-90', rating: '4.5', reviews: 98, spec: ['Холодильники', 'Кондиционеры'], warranty: '6 мес', hours: '09:00–19:00', cert: false },
+  { n: 'СибирьТех', city: 'Красноярск', region: 'Сибирский', addr: 'ул. Мира, 77', phone: '+7 (391) 567-89-01', rating: '4.6', reviews: 67, spec: ['Стиральные машины', 'Варочные панели'], warranty: '12 мес', hours: '10:00–20:00', cert: true },
+  { n: 'ЮгСервис', city: 'Ростов-на-Дону', region: 'Южный', addr: 'ул. Большая Садовая, 25', phone: '+7 (863) 678-90-12', rating: '4.4', reviews: 45, spec: ['Холодильники', 'Стиральные машины'], warranty: '6 мес', hours: '09:00–19:00', cert: false },
+  { n: 'МастерДом', city: 'Владивосток', region: 'Дальневосточный', addr: 'ул. Светлая, 12', phone: '+7 (423) 789-01-23', rating: '4.8', reviews: 34, spec: ['Все типы'], warranty: '12 мес', hours: '10:00–21:00', cert: true },
+  { n: 'ВолгаРемонт', city: 'Нижний Новгород', region: 'Приволжский', addr: 'ул. Б.Покровская, 15', phone: '+7 (831) 890-12-34', rating: '4.7', reviews: 78, spec: ['Посудомоечные', 'Стиральные машины'], warranty: '12 мес', hours: '09:00–20:00', cert: true },
+];
+
 const PRICES = [
   { service: 'Диагностика (при ремонте — бесплатно)', price: 'от 500 ₽' },
   { service: 'Замена ТЭНа', price: 'от 1 200 ₽' },
@@ -89,6 +109,80 @@ const PRICES = [
     </section>
   </main>
 
+  <!-- Сервисная сеть -->
+  <section id="service-network" class="mt-16 bg-slate-950 text-white">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+      <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Сервисная сеть</h2>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-400">Найдите авторизованный сервисный центр в вашем регионе. Гарантия качества и прозрачные цены.</p>
+      <div class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {SN_STATS.map((s) => (
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-center sm:p-6">
+            <p class="text-2xl font-extrabold tracking-tight text-orange-400 sm:text-3xl">{s.value}</p>
+            <p class="mt-1.5 text-xs text-slate-400">{s.label}</p>
+          </div>
+        ))}
+      </div>
+      <label class="mt-8 flex max-w-2xl items-center gap-3 rounded-full bg-white px-5 py-3.5 ring-1 ring-white/10 transition focus-within:ring-2 focus-within:ring-orange-500">
+        <svg class="h-5 w-5 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="sn-q" type="search" placeholder="Поиск по городу или названию..." class="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none" aria-label="Поиск сервисного центра" />
+      </label>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <div class="flex flex-wrap items-center gap-3">
+      <select id="sn-region" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition focus:border-orange-500 focus:outline-none" aria-label="Регион">
+        {SN_REGIONS.map((r) => <option>{r}</option>)}
+      </select>
+      <label class="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm transition hover:border-orange-300">
+        <input id="sn-cert" type="checkbox" class="h-4 w-4 rounded accent-orange-500" />
+        Только сертифицированные
+      </label>
+      <p class="ml-auto text-sm text-slate-500">Найдено: <b id="sn-count" class="text-slate-900">{SN_CENTERS.length}</b></p>
+    </div>
+
+    <div id="sn-grid" class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {SN_CENTERS.map((c) => (
+        <article
+          class="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5"
+          data-sn-card
+          data-search={`${c.n} ${c.city} ${c.region}`.toLowerCase()}
+          data-region={c.region}
+          data-cert={c.cert ? '1' : '0'}
+        >
+          <div class="flex items-start gap-3.5">
+            <span class={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-lg font-extrabold ${c.cert ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-slate-200 text-slate-500'}`}>{c.n.charAt(0)}</span>
+            <div class="min-w-0">
+              <h3 class="font-bold text-slate-950">{c.n}</h3>
+              <p class="mt-0.5 text-xs leading-5 text-slate-500">{c.city}, {c.region} округ</p>
+            </div>
+            {c.cert && (
+              <span class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                Сертифицирован
+              </span>
+            )}
+          </div>
+          <ul class="mt-4 space-y-2 text-sm text-slate-500">
+            <li class="flex items-center gap-2.5"><svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>{c.addr}</li>
+            <li class="flex items-center gap-2.5"><svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>{c.phone}</li>
+            <li class="flex items-center gap-2.5"><svg class="h-4 w-4 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{c.hours}</li>
+          </ul>
+          <div class="mb-4 mt-4 flex flex-wrap gap-2">
+            {c.spec.map((sp) => <span class="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-600">{sp}</span>)}
+          </div>
+          <div class="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+            <p class="flex items-center gap-1.5 text-sm font-bold text-slate-900">
+              <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+              {c.rating} <span class="font-normal text-slate-400">({c.reviews})</span>
+            </p>
+            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">Гарантия: {c.warranty}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <script>
     import { gsap } from 'gsap';
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -104,5 +198,30 @@ const PRICES = [
       if (done && !reduceMotion) gsap.from(done, { y: 10, autoAlpha: 0, duration: 0.4, ease: 'power2.out', clearProps: 'all' });
       form.reset();
     });
+
+    // Сервисная сеть: поиск + фильтры
+    const snQ = document.getElementById('sn-q') as HTMLInputElement | null;
+    const snRegion = document.getElementById('sn-region') as HTMLSelectElement | null;
+    const snCert = document.getElementById('sn-cert') as HTMLInputElement | null;
+    const snCount = document.getElementById('sn-count');
+    const snCards = Array.from(document.querySelectorAll<HTMLElement>('[data-sn-card]'));
+    const filterNetwork = () => {
+      const q = (snQ?.value || '').trim().toLowerCase();
+      const region = snRegion?.value || 'Все регионы';
+      const onlyCert = snCert?.checked || false;
+      let visible = 0;
+      for (const card of snCards) {
+        const ok =
+          (!q || (card.dataset.search || '').includes(q)) &&
+          (region === 'Все регионы' || card.dataset.region === region) &&
+          (!onlyCert || card.dataset.cert === '1');
+        card.classList.toggle('hidden', !ok);
+        if (ok) visible += 1;
+      }
+      if (snCount) snCount.textContent = String(visible);
+    };
+    snQ?.addEventListener('input', filterNetwork);
+    snRegion?.addEventListener('change', filterNetwork);
+    snCert?.addEventListener('change', filterNetwork);
   </script>
 </BaseLayout>
