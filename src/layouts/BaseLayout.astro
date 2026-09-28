@@ -25,6 +25,12 @@ const MENU = [
   { id: 'master', label: 'Мастер за 1 час', href: '/master/' },
   { id: 'contacts', label: 'Контакты', href: '/contacts/' },
 ];
+const CATALOG_LINKS = [
+  { label: 'Стиральные машины', href: '/каталог/?категория=Стиральные%20машины' },
+  { label: 'Холодильники', href: '/каталог/?категория=Холодильники' },
+  { label: 'Посудомоечные машины', href: '/каталог/?категория=Посудомоечные%20машины' },
+  { label: 'Плиты и духовые шкафы', href: '/каталог/?категория=Плиты%20и%20духовые%20шкафы' },
+];
 ---
 <!doctype html>
 <html lang="ru">
@@ -107,11 +113,8 @@ const MENU = [
         <nav aria-label="Каталог">
           <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Каталог</h3>
           <ul class="mt-4 space-y-2.5 text-sm">
-            <li><a class="transition hover:text-orange-400" href="/">Стиральные машины</a></li>
-            <li><a class="transition hover:text-orange-400" href="/">Холодильники</a></li>
-            <li><a class="transition hover:text-orange-400" href="/">Посудомоечные машины</a></li>
-            <li><a class="transition hover:text-orange-400" href="/">Плиты и духовые шкафы</a></li>
-            <li><a class="transition hover:text-orange-400" href="/">Все категории</a></li>
+            {CATALOG_LINKS.map((item) => <li><a class="transition hover:text-orange-400" href={item.href}>{item.label}</a></li>)}
+            <li><a class="transition hover:text-orange-400" href="/каталог/">Все категории</a></li>
           </ul>
         </nav>
         <nav aria-label="Экосистема">

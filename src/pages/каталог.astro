@@ -1,0 +1,20 @@
+---
+// Russian public alias for the marketplace. Query strings stay intact so both
+// `/каталог/?категория=…` and `/market/?category=…` select the same category.
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Перенаправление в каталог — ЗИПТОП</title>
+    <script is:inline>
+      const destination = `/market/${window.location.search}${window.location.hash}`;
+      window.location.replace(destination);
+    </script>
+  </head>
+  <body>
+    <p>Открываем <a href="/market/">каталог</a>…</p>
+  </body>
+</html>
