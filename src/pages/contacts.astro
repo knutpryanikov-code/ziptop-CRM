@@ -11,7 +11,7 @@ const CONTACTS = [
   { icon: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>', title: 'Адрес', text: 'г. Новосибирск, ул. Фрунзе, 63', sub: 'Склад-магазин, 1 этаж' },
   { icon: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>', title: 'Телефон', text: '+7 953 777-70-89', href: 'tel:+79537777089', sub: 'Пн–Пт: 10:00–19:00, Сб–Вс: 11:00–17:00' },
   { icon: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>', title: 'Почта', text: 'admin@zipinsk.ru', href: 'mailto:admin@zipinsk.ru', sub: 'Ответим в течение рабочего дня' },
-  { icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>', title: 'Реквизиты', text: 'ООО «ТехноПарт»', sub: 'ИНН 5408130126' },
+  { icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>', title: 'Реквизиты', text: 'ООО «ЗИПТОП.РФ»', sub: 'ИНН 5408130126' },
 ];
 ---
 <BaseLayout title="ЗИПТОП — Контакты" active="contacts">
@@ -57,22 +57,10 @@ const CONTACTS = [
       </div>
     </section>
 
-    <!-- Карта-заглушка -->
+    <!-- Яндекс.Карты: ул. Фрунзе, 63 -->
     <section class="mt-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm" data-animate="card">
-      <div class="relative flex h-72 items-center justify-center bg-slate-100">
-        <svg class="absolute inset-0 h-full w-full text-slate-200" viewBox="0 0 800 288" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <g stroke="currentColor" stroke-width="2" fill="none">
-            <path d="M0 60h800M0 140h800M0 220h800M120 0v288M300 0v288M480 0v288M660 0v288"/>
-          </g>
-        </svg>
-        <div class="relative text-center">
-          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-orange-500 text-white shadow-lg shadow-orange-500/40">
-            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          </span>
-          <p class="mt-3 font-bold text-slate-900">ул. Фрунзе, 63, Новосибирск</p>
-          <a href="https://yandex.ru/maps/?text=Новосибирск, Фрунзе 63" target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-sm font-semibold text-orange-600 transition hover:text-orange-700">Открыть в Яндекс.Картах ↗</a>
-        </div>
-      </div>
+      <iframe title="ЗИПТОП — Новосибирск, ул. Фрунзе, 63" src="https://yandex.ru/map-widget/v1/?ll=82.953263%2C55.040286&z=16&pt=82.953263%2C55.040286%2Cpm2orgm" class="h-72 w-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4"><p class="font-bold text-slate-900">ул. Фрунзе, 63, Новосибирск</p><a href="https://yandex.ru/maps/?text=Новосибирск, Фрунзе 63" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center text-sm font-semibold text-orange-600 transition hover:text-orange-700">Открыть в Яндекс.Картах ↗</a></div>
     </section>
   </main>
 
