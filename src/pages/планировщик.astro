@@ -1,0 +1,23 @@
+---
+// Админская кнопка «Планировщик» в приложении Market ведёт на /планировщик/.
+// Целевой адрес планировщика — /каталог/admin/planner/, поэтому старый путь
+// навсегда перенаправляем туда (query и hash сохраняются).
+const destination = '/каталог/admin/planner/';
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content={`0; url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>Перенаправление в планировщик — ЗИПТОП</title>
+    <script is:inline define:vars={{ destination }}>
+      window.location.replace(`${destination}${window.location.search}${window.location.hash}`);
+    </script>
+  </head>
+  <body>
+    <p>Открываем <a href={destination}>планировщик</a>…</p>
+  </body>
+</html>
