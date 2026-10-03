@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const COURSES = [
+  { level: 'Средний', category: 'Диагностика', title: 'Диагностика стиральных машин Bosch/Siemens', text: 'Полное руководство по диагностике неисправностей стиральных машин Bosch и Siemens. Разборка, тестирование узлов, работа со сканером.', tags: ['Bosch', 'Siemens', 'Диагностика'], hours: '8 часов', lessons: '24 урока', students: '1 240', price: '4 900 ₽', oldPrice: '6 900 ₽', rating: '4.9' },
+  { level: 'Продвинутый', category: 'Электроника', title: 'Ремонт плат управления LG и Samsung', text: 'Ремонт и программирование плат управления современных стиральных машин. Замена микроконтроллеров, прошивка, пайка BGA.', tags: ['LG', 'Samsung', 'Платы'], hours: '12 часов', lessons: '36 уроков', students: '890', price: '7 900 ₽', oldPrice: '9 900 ₽', rating: '4.8' },
+  { level: 'Начальный', category: 'Комплектующие', title: 'Основы работы с ТЭНами и нагревателями', text: 'Всё о нагревательных элементах: виды, маркировка, проверка мультиметром, типичные неисправности, замена.', tags: ['ТЭНы', 'Общие'], hours: '4 часа', lessons: '12 уроков', students: '2 340', price: '2 900 ₽', oldPrice: '3 900 ₽', rating: '4.6' },
+  { level: 'Средний', category: 'Холодильники', title: 'Ремонт холодильников: компрессоры и контур', text: 'Диагностика и ремонт холодильных компрессоров, работа с фреоном, поиск утечек, замена фильтров-осушителей.', tags: ['Холодильники', 'Компрессоры'], hours: '10 часов', lessons: '30 уроков', students: '670', price: '5 900 ₽', oldPrice: '7 900 ₽', rating: '4.7' },
+  { level: 'Начальный', category: 'Насосы', title: 'Ремонт насосов и систем слива', text: 'Диагностика сливных насосов, замена улиток, чистка фильтров, устранение засоров системы слива.', tags: ['Насосы', 'Слив'], hours: '5 часов', lessons: '15 уроков', students: '1 560', price: '3 400 ₽', oldPrice: '4 400 ₽', rating: '4.5' },
+  { level: 'Начальный', category: 'Платформа', title: 'Работа с сервисным ПО ЗИПТОП', text: 'Бесплатный курс по работе с платформой ЗИПТОП: поиск запчастей, заказ, отслеживание, интеграция с CRM.', tags: ['ЗИПТОП', 'CRM'], hours: '3 часа', lessons: '10 уроков', students: '3 120', price: 'Бесплатно', rating: '4.8', free: true },
+];
+---
+
+<BaseLayout title="Обучение и сертификация | ЗИПТОП">
+  <main>
+    <section class="bg-slate-950 text-white">
+      <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16">
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">Обучение и сертификация</h1>
+        <p class="mt-4 max-w-2xl text-sm leading-6 text-slate-300">Повышайте квалификацию с профессиональными курсами от ведущих экспертов отрасли.</p>
+        <div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4"><div class="rounded-2xl bg-white/10 p-4 text-center"><b class="text-xl text-amber-400">50+</b><p class="mt-1 text-xs text-slate-400">Курсов</p></div><div class="rounded-2xl bg-white/10 p-4 text-center"><b class="text-xl text-amber-400">10,000+</b><p class="mt-1 text-xs text-slate-400">Выпускников</p></div><div class="rounded-2xl bg-white/10 p-4 text-center"><b class="text-xl text-amber-400">4.7★</b><p class="mt-1 text-xs text-slate-400">Средний рейтинг</p></div><div class="rounded-2xl bg-white/10 p-4 text-center"><b class="text-xl text-amber-400">95%</b><p class="mt-1 text-xs text-slate-400">Трудоустройство</p></div></div>
+      </div>
+    </section>
+    <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+      <div class="grid gap-3 md:grid-cols-[1fr_auto_auto]"><label class="flex h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-slate-400 shadow-sm"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="course-search" type="search" placeholder="Поиск по курсам..." class="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none" /></label><select id="category-filter" class="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:border-orange-500 focus:outline-none"><option value="">Все</option>{[...new Set(COURSES.map((course) => course.category))].map((category) => <option value={category}>{category}</option>)}</select><select id="level-filter" class="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700 shadow-sm focus:border-orange-500 focus:outline-none"><option value="">Все уровни</option>{[...new Set(COURSES.map((course) => course.level))].map((level) => <option value={level}>{level}</option>)}</select></div>
+      <p class="mt-6 text-sm text-slate-500">Найдено: <b id="course-count" class="text-slate-950">{COURSES.length}</b> курсов</p>
+      <div class="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {COURSES.map((course) => (
+          <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10" data-course={`${course.title} ${course.text} ${course.category} ${course.level}`.toLowerCase()} data-category={course.category} data-level={course.level}>
+            <div class="flex flex-wrap gap-2"><span class="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-bold text-amber-700">{course.level}</span><span class="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700">{course.category}</span></div>
+            <h2 class="mt-4 text-lg font-extrabold leading-6 text-slate-950">{course.title}</h2><p class="mt-3 text-sm leading-6 text-slate-500">{course.text}</p>
+            <div class="mt-4 flex flex-wrap gap-2">{course.tags.map((tag) => <span class="rounded-md bg-slate-100 px-2 py-1 text-[11px] font-semibold text-slate-500">{tag}</span>)}</div>
+            <div class="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-500"><span>◷ {course.hours}</span><span>▣ {course.lessons}</span><span>♙ {course.students}</span></div>
+            <div class="mt-6 flex items-end justify-between gap-3 border-t border-slate-100 pt-4"><div><b class={`text-lg font-extrabold ${course.free ? 'text-emerald-600' : 'text-slate-950'}`}>{course.price}</b>{course.oldPrice && <del class="ml-2 text-xs text-slate-400">{course.oldPrice}</del>}</div><span class="text-sm font-bold text-amber-600">★ {course.rating}</span></div>
+            <button type="button" class="mt-4 min-h-11 rounded-full bg-orange-500 px-4 text-sm font-bold text-white transition hover:bg-orange-600 active:scale-[0.96]">{course.free ? 'Начать обучение' : 'Записаться на курс'}</button>
+          </article>
+        ))}
+      </div>
+      <p id="course-empty" class="mt-6 hidden rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">По вашему запросу курсы не найдены.</p>
+    </section>
+  </main>
+  <script>
+    const search = document.querySelector<HTMLInputElement>('#course-search'); const category = document.querySelector<HTMLSelectElement>('#category-filter'); const level = document.querySelector<HTMLSelectElement>('#level-filter'); const count = document.querySelector('#course-count'); const empty = document.querySelector('#course-empty');
+    const filterCourses = () => { const query = search?.value.trim().toLowerCase() || ''; let visible = 0; document.querySelectorAll<HTMLElement>('[data-course]').forEach((course) => { const matches = (!query || course.dataset.course?.includes(query)) && (!category?.value || course.dataset.category === category.value) && (!level?.value || course.dataset.level === level.value); course.classList.toggle('hidden', !matches); if (matches) visible += 1; }); if (count) count.textContent = String(visible); empty?.classList.toggle('hidden', visible > 0); };
+    search?.addEventListener('input', filterCourses); category?.addEventListener('change', filterCourses); level?.addEventListener('change', filterCourses);
+  </script>
+</BaseLayout>

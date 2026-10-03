@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
-import CartDrawer from '../components/CartDrawer.astro';
+import { ClientRouter } from 'astro:transitions';
+import CitySelector from '../components/CitySelector.astro';
+import MainHeaderSearch from '../components/MainHeaderSearch.astro';
+import MainLoginPopup from '../components/MainLoginPopup.astro';
 
 interface Props {
   title: string;
@@ -16,14 +19,11 @@ const {
 
 const MENU = [
   { id: 'home', label: 'Главная', href: '/' },
-  { id: 'catalog', label: 'Каталог', href: '/market' },
-  { id: 'scheme', label: 'Взрыв-схемы', href: '/scheme/' },
-  { id: 'ai', label: 'AI-подбор', href: '/ai/' },
-  { id: 'ecosystem', label: 'Экосистема', href: '/ecosystem/' },
-  { id: 'partner', label: 'Партнёрам', href: '/partner/' },
-  { id: 'crm', label: 'CRM', href: '/crm/' },
-  { id: 'master', label: 'Мастер за 1 час', href: '/master/' },
-  { id: 'contacts', label: 'Контакты', href: '/contacts/' },
+  { id: 'catalog', label: 'Каталог', href: '/каталог/' },
+  { id: 'scheme', label: 'Взрыв-схемы', href: '/взрыв-схемы/' },
+  { id: 'ai', label: 'AI-подбор', href: '/ии-подбор/' },
+  { id: 'ecosystem', label: 'Экосистема', href: '/экосистема/' },
+  { id: 'contacts', label: 'Контакты', href: '/контакты/' },
 ];
 const CATALOG_LINKS = [
   { label: 'Стиральные машины', href: '/каталог/?категория=Стиральные%20машины' },
@@ -42,6 +42,22 @@ const CATALOG_LINKS = [
     <meta name="theme-color" content="#f97316" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <ClientRouter />
+    <style is:global>
+      .main-site-header__inner { gap: 18px; }
+      .main-site-brand__copy { display:grid; width:70px; line-height:1; color:#0f172a; font-size:18px; font-weight:800; letter-spacing:-.045em; }
+      .main-site-brand__copy > span > span { color:#f97316; }
+      /* Keep storage-dependent header controls out of the static first
+         paint. CitySelector fills the saved value, then reveals both. */
+      .main-site-header .main-header-search-wrap,
+      .main-site-header .site-city-selector { visibility:hidden; opacity:0; transform:translateY(-2px); transition:opacity .18s ease-out,transform .18s ease-out; }
+      .main-site-header.is-header-ready .main-header-search-wrap,
+      .main-site-header.is-header-ready .site-city-selector { visibility:visible; opacity:1; transform:translateY(0); }
+      .main-site-nav a[hidden] { display:none; }
+      .main-site-nav { display:flex; flex:0 1 auto; min-width:0; }
+      @media (max-width:1180px) { .main-site-header__inner { height:auto!important; min-height:64px; flex-wrap:wrap; gap:8px 14px; padding:8px 0; } }
+      @media (max-width:640px) { .site-city-selector span { display:none; } }
+    </style>
   </head>
   <body class="bg-[#f7f8fa] text-slate-900 antialiased">
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
@@ -50,51 +66,31 @@ const CATALOG_LINKS = [
       <div class="animate-blob animation-delay-4000 absolute -left-40 top-2/3 h-[20rem] w-[20rem] rounded-full bg-orange-300/10 blur-3xl"></div>
     </div>
 
-    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div class="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <a href="/" class="flex shrink-0 items-center gap-2.5" aria-label="ЗИПТОП — на главную">
+    <header class="main-site-header sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div class="main-site-header__inner mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
+        <a href="/" class="main-site-brand flex shrink-0 items-center gap-2.5" aria-label="ЗИПТОП — на главную">
           <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500 shadow-[0_0_18px_rgba(249,115,22,0.45)]">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
           </span>
-          <span class="text-lg font-extrabold tracking-tight text-slate-900">ЗИП<span class="text-orange-500">ТОП</span></span>
+          <span class="main-site-brand__copy"><span>ЗИП<span>ТОП</span></span></span>
         </a>
-        <nav class="hidden items-center gap-3.5 whitespace-nowrap text-[13px] font-medium text-slate-600 xl:flex" aria-label="Основная навигация">
+        <nav class="main-site-nav items-center gap-1 whitespace-nowrap text-[13px] font-medium text-slate-600" aria-label="Основная навигация">
           {MENU.map((item) => (
             item.id === active
               ? <span class="rounded-full bg-slate-900 px-3.5 py-1.5 text-white" aria-current="page">{item.label}</span>
-              : <a class="transition hover:text-orange-600" href={item.href}>{item.label}</a>
+              : <a class="rounded-full px-2.5 py-2 transition hover:text-orange-600" href={item.href} data-menu-optional={['scheme', 'ai', 'ecosystem', 'contacts'].includes(item.id) ? '' : undefined} data-astro-prefetch={item.id === 'catalog' ? 'load' : undefined} data-astro-reload={item.id === 'catalog' ? 'true' : undefined}>{item.label}</a>
           ))}
         </nav>
-        <span data-city-label class="hidden items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-slate-500 xl:flex" aria-live="polite">
-          <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-          Ваш город: Новосибирск
-        </span>
-        <div class="ml-auto flex shrink-0 items-center gap-3">
-          <a href="tel:+79537777089" class="hidden items-center gap-2 whitespace-nowrap text-sm font-semibold text-slate-800 transition hover:text-orange-600 md:flex">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            +7 953 777-70-89
-          </a>
+        <MainHeaderSearch />
+        <div class="main-site-header__controls ml-auto flex shrink-0 items-center gap-3">
+          <CitySelector />
+          <MainLoginPopup />
           <button type="button" data-cart-toggle class="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg shadow-slate-900/20 transition hover:bg-orange-500 hover:shadow-orange-500/30" aria-label="Корзина">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
             <span data-cart-count class="absolute -right-1 -top-1 grid min-h-5 min-w-5 place-items-center rounded-full bg-orange-500 px-1 text-[10px] font-extrabold text-white">0</span>
           </button>
-          <button type="button" id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-700 transition hover:border-orange-500 hover:text-orange-600 xl:hidden" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
         </div>
       </div>
-      <nav id="mobile-menu" class="hidden border-t border-slate-100 bg-white px-4 py-3 xl:hidden" aria-label="Мобильная навигация">
-        <ul class="grid gap-1 text-sm font-medium text-slate-700">
-          <li><span data-city-label class="flex items-center gap-2 rounded-xl bg-orange-50 px-4 py-2.5 text-xs font-semibold text-orange-700" aria-live="polite"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>Новосибирск</span></li>
-          {MENU.map((item) => (
-            <li>
-              {item.id === active
-                ? <span class="block rounded-xl bg-slate-900 px-4 py-2.5 text-white" aria-current="page">{item.label}</span>
-                : <a class="block rounded-xl px-4 py-2.5 transition hover:bg-orange-50 hover:text-orange-600" href={item.href}>{item.label}</a>}
-            </li>
-          ))}
-        </ul>
-      </nav>
     </header>
 
     <slot />
@@ -120,12 +116,12 @@ const CATALOG_LINKS = [
         <nav aria-label="Экосистема">
           <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Экосистема</h3>
           <ul class="mt-4 space-y-2.5 text-sm">
-            <li><a class="transition hover:text-orange-400" href="/ecosystem/">Обзор экосистемы</a></li>
+            <li><a class="transition hover:text-orange-400" href="/экосистема/">Обзор экосистемы</a></li>
             <li><a class="transition hover:text-orange-400" href="/crm/">CRM и учёт</a></li>
-            <li><a class="transition hover:text-orange-400" href="/scheme/">Взрыв-схемы</a></li>
-            <li><a class="transition hover:text-orange-400" href="/ai/">AI-подбор по фото</a></li>
-            <li><a class="transition hover:text-orange-400" href="/partner/">Партнёрам</a></li>
-            <li><a class="transition hover:text-orange-400" href="/master/">Вызов мастера</a></li>
+            <li><a class="transition hover:text-orange-400" href="/взрыв-схемы/">Взрыв-схемы</a></li>
+            <li><a class="transition hover:text-orange-400" href="/ии-подбор/">AI-подбор по фото</a></li>
+            <li><a class="transition hover:text-orange-400" href="/партнёрам/">Партнёрам</a></li>
+            <li><a class="transition hover:text-orange-400" href="/вызов-мастера/">Вызов мастера</a></li>
           </ul>
         </nav>
         <div>
@@ -146,17 +142,46 @@ const CATALOG_LINKS = [
       </div>
     </footer>
 
-    <CartDrawer />
-
     <script>
-      const toggle = document.getElementById('menu-toggle');
-      const menu = document.getElementById('mobile-menu');
-      toggle?.addEventListener('click', () => {
-        if (!menu) return;
-        const open = menu.classList.toggle('hidden') === false;
-        toggle.setAttribute('aria-expanded', String(open));
-      });
-
+      const initializedHeaderMenus = new WeakSet<HTMLElement>();
+      const initResponsiveHeaderMenu = () => {
+        const header = document.querySelector<HTMLElement>('.main-site-header');
+        const nav = header?.querySelector<HTMLElement>('.main-site-nav');
+        const search = header?.querySelector<HTMLElement>('.main-header-search-wrap');
+        if (!header || !nav || !search || initializedHeaderMenus.has(header)) return;
+        initializedHeaderMenus.add(header);
+        const optional = Array.from(nav.querySelectorAll<HTMLAnchorElement>('[data-menu-optional]'));
+        const fitMenu = () => {
+          optional.forEach((link) => { link.hidden = false; });
+          const controls = header.querySelector<HTMLElement>('.main-site-header__controls');
+          const rightLimit = window.matchMedia('(min-width: 1181px)').matches
+            ? search.getBoundingClientRect().left - 14
+            : (controls?.getBoundingClientRect().left || header.getBoundingClientRect().right) - 12;
+          for (const link of [...optional].reverse()) {
+            const visible = Array.from(nav.children).filter((item) => !(item as HTMLElement).hidden);
+            if (!visible.length || (visible.at(-1) as HTMLElement).getBoundingClientRect().right <= rightLimit) break;
+            link.hidden = true;
+          }
+        };
+        const observer = new ResizeObserver(() => requestAnimationFrame(fitMenu));
+        observer.observe(header); observer.observe(search);
+        window.addEventListener('resize', fitMenu, { passive: true });
+        window.addEventListener('ziptop:city-changed', () => requestAnimationFrame(fitMenu));
+        document.fonts?.ready.then(fitMenu);
+        requestAnimationFrame(fitMenu);
+      };
+      initResponsiveHeaderMenu();
+      document.addEventListener('astro:page-load', initResponsiveHeaderMenu);
+      // The logo already points to the current document on the home page.
+      // Avoid a needless ClientRouter swap, which otherwise replaces the
+      // header with its SSG markup for a moment.
+      document.addEventListener('click', (event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const logo = (event.target as HTMLElement).closest<HTMLAnchorElement>('a.main-site-brand');
+        if (!logo || new URL(logo.href).pathname !== window.location.pathname) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, true);
       type LocationCache = { city: string; countryCode: string; expiresAt: number };
       const locationCacheKey = 'ziptop-location-v1';
       const fallback = 'Работаем по всей России';
@@ -191,6 +216,29 @@ const CATALOG_LINKS = [
       } catch {
         updateLocationText();
       }
+
+      const updateCartCount = () => {
+        try {
+          const cart = JSON.parse(localStorage.getItem('ziptop_cart') || '[]');
+          const count = Array.isArray(cart) ? cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0) : 0;
+          document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((node) => { node.textContent = String(count); });
+        } catch {}
+      };
+      updateCartCount();
+      window.addEventListener('cart:updated', updateCartCount);
+      window.addEventListener('storage', (event) => { if (event.key === 'ziptop_cart') updateCartCount(); });
+      document.addEventListener('click', async (event) => {
+        const toggle = (event.target as HTMLElement).closest<HTMLElement>('[data-cart-toggle]');
+        if (!toggle) return;
+        event.preventDefault();
+        const { openCart } = await import('../scripts/lazy-cart');
+        openCart();
+      });
+
+      // The catalogue is deployed by its own Astro build. It should be
+      // prefetched, but entered by a real navigation so its page scripts get
+      // a clean document and initialize city/search state reliably.
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="/каталог/"]').forEach((link) => link.dataset.astroReload = 'true');
     </script>
   </body>
 </html>

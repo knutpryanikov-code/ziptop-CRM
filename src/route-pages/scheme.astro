@@ -1,0 +1,375 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface SchemeProduct { name: string; art: string; price: string }
+interface SchemePart { n: number; name: string; desc: string; icon: string; x: number; y: number; ax: number; ay: number; products: SchemeProduct[] }
+
+const PARTS: SchemePart[] = [
+  { n: 1, name: 'Манжета люка', desc: 'Уплотнение люка должно точно совпадать по диаметру и посадке бака.', icon: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/>', x: 84, y: 40, ax: 62, ay: 52, products: [
+    { name: 'Манжета люка СМА Samsung DC64-00563B', art: 'DC64-00563B', price: '2 450 ₽' },
+    { name: 'Манжета люка СМА LG MDS41955001', art: 'MDS41955001', price: '2 180 ₽' },
+  ] },
+  { n: 2, name: 'ТЭН (нагреватель)', desc: 'Мощность и длина должны совпадать с оригиналом (±10%).', icon: '<path d="M4 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M4 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>', x: 86, y: 55, ax: 60, ay: 66, products: [
+    { name: 'ТЭН 1900W с датчиком СМА Samsung', art: 'WM1009SZw', price: '1 350 ₽' },
+    { name: 'ТЭН 2000W СМА Bosch прямой', art: 'BS-2000-PR', price: '1 480 ₽' },
+  ] },
+  { n: 3, name: 'Сливной насос', desc: 'Проверьте крепление улитки и тип клемм перед заказом.', icon: '<circle cx="12" cy="12" r="8"/><path d="M12 4v4M12 16v4M4 12h4M16 12h4"/>', x: 47, y: 6, ax: 50, ay: 16, products: [
+    { name: 'Насос слива Askoll 30W', art: 'PMP-ASK-01', price: '1 890 ₽' },
+    { name: 'Насос слива Hanyu B13-6A', art: 'PMP-HAN-13', price: '1 650 ₽' },
+  ] },
+  { n: 4, name: 'Двигатель', desc: 'Коллекторный или инверторный — зависит от серии машины.', icon: '<rect width="16" height="12" x="4" y="6" rx="2"/><path d="M12 6V3M9 18v3M15 18v3"/>', x: 86, y: 82, ax: 62, ay: 84, products: [
+    { name: 'Двигатель СМА Welling 300W', art: 'MTR-WL-300', price: '6 900 ₽' },
+    { name: 'Щётки двигателя (комплект)', art: 'BR-SET-02', price: '540 ₽' },
+  ] },
+  { n: 5, name: 'Амортизаторы', desc: 'Меняются парой, усилие 80–120N по модели.', icon: '<path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/>', x: 12, y: 86, ax: 38, ay: 88, products: [
+    { name: 'Амортизатор СМА 100N (пара)', art: 'AMO-100N-2', price: '1 100 ₽' },
+    { name: 'Амортизатор СМА Bosch 90N', art: 'BS-90N-01', price: '620 ₽' },
+  ] },
+  { n: 6, name: 'Приводной ремень', desc: 'Длина в маркировке: например 1195 J5.', icon: '<ellipse cx="12" cy="12" rx="9" ry="5"/><ellipse cx="12" cy="12" rx="4.5" ry="2"/>', x: 86, y: 69, ax: 63, ay: 74, products: [
+    { name: 'Ремень 1195 J5 ELAST', art: 'BLT-1195J5', price: '480 ₽' },
+    { name: 'Ремень 1280 J6', art: 'BLT-1280J6', price: '520 ₽' },
+  ] },
+  { n: 7, name: 'Модуль управления', desc: 'Прошивка привязана к модели — сверьте артикул.', icon: '<rect width="16" height="10" x="4" y="7" rx="2"/><path d="M8 11h3M13 11h.01M8 14h.01M12 14h4"/>', x: 84, y: 26, ax: 62, ay: 24, products: [
+    { name: 'Модуль управления СМА Indesit EVO-II', art: 'MDL-EVO2-01', price: '4 750 ₽' },
+    { name: 'Плата индикации СМА Samsung', art: 'PCB-SM-07', price: '2 300 ₽' },
+  ] },
+  { n: 8, name: 'Дозатор моющих средств', desc: 'Бункер и лоток часто меняются в сборе.', icon: '<rect width="16" height="8" x="4" y="8" rx="2"/><path d="M8 12h8"/>', x: 14, y: 28, ax: 38, ay: 22, products: [
+    { name: 'Дозатор в сборе СМА Bosch', art: 'DSB-BS-11', price: '1 950 ₽' },
+    { name: 'Лоток дозатора СМА LG', art: 'DSB-LG-04', price: '780 ₽' },
+  ] },
+  { n: 9, name: 'Шкив барабана', desc: 'Диаметр и посадка под вал — по шильдику бака.', icon: '<circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="2"/>', x: 12, y: 72, ax: 40, ay: 76, products: [
+    { name: 'Шкив барабана СМА универсальный 280мм', art: 'PLV-280-U', price: '890 ₽' },
+    { name: 'Шкив СМА Zanussi 250мм', art: 'PLV-ZN-250', price: '760 ₽' },
+  ] },
+  { n: 10, name: 'Подшипниковый узел', desc: 'Комплект: подшипники 6204/6205 + сальник.', icon: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>', x: 47, y: 95, ax: 50, ay: 90, products: [
+    { name: 'Подшипниковый узел 6204+6205 + сальник', art: 'BRG-KIT-45', price: '1 240 ₽' },
+    { name: 'Сальник бака 25×47×10', art: 'SL-254710', price: '340 ₽' },
+  ] },
+  { n: 11, name: 'Клапан подачи воды', desc: 'Соленоид 1/2/3 секции — по числу раздач.', icon: '<rect width="14" height="10" x="5" y="7" rx="2"/><path d="M5 10h14M9 4v3M15 4v3"/>', x: 14, y: 44, ax: 37, ay: 42, products: [
+    { name: 'Клапан подачи 2-секц. универсал', art: 'VLV-2S-U', price: '950 ₽' },
+    { name: 'Клапан подачи СМА Samsung 3-секц.', art: 'VLV-SM-3S', price: '1 300 ₽' },
+  ] },
+  { n: 12, name: 'Фильтр насоса', desc: 'Сливной фильтр — совпадение по резьбе улитки.', icon: '<circle cx="12" cy="12" r="6"/><path d="M12 6v12M6 12h12M8 8l8 8M16 8l-8 8" stroke-dasharray="2 2"/>', x: 14, y: 58, ax: 37, ay: 58, products: [
+    { name: 'Фильтр сливного насоса Askoll', art: 'FLT-ASK-01', price: '320 ₽' },
+    { name: 'Фильтр насоса СМА LG', art: 'FLT-LG-03', price: '290 ₽' },
+  ] },
+];
+
+interface ModelSection { id: string; label: string; count: string; icon: string; models: { m: string; b: string }[] }
+
+const SECTIONS: ModelSection[] = [
+  { id: 'washer', label: 'Стиральная машина', count: '1 969', icon: '<rect width="18" height="18" x="3" y="3" rx="3"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="2"/><path d="M7 6.5h.01M10 6.5h.01"/>', models: [
+    { m: 'WLG20060', b: 'Bosch' }, { m: 'WLG20260', b: 'Bosch' }, { m: 'WLG24260', b: 'Bosch' }, { m: 'WAN20060', b: 'Bosch' },
+    { m: 'WF60F1R2E2WD', b: 'Samsung' }, { m: 'WW70J52E0HW', b: 'Samsung' }, { m: 'WW65K42E00W', b: 'Samsung' },
+    { m: 'WISL 102', b: 'Indesit' }, { m: 'IWSD 5105', b: 'Indesit' }, { m: 'BWSA 51051', b: 'Indesit' },
+    { m: 'F2J3NS0W', b: 'LG' }, { m: 'F80B8LD', b: 'LG' }, { m: 'FH0B8ND6', b: 'LG' },
+    { m: '60С102', b: 'Atlant' }, { m: '70С108', b: 'Atlant' },
+    { m: 'WRS 55P2 BSW', b: 'Beko' }, { m: 'WKB 61031', b: 'Beko' },
+    { m: 'EWF 1074', b: 'Electrolux' }, { m: 'EWS 1066', b: 'Electrolux' },
+    { m: 'CS4 1051D1', b: 'Candy' }, { m: 'GVS34 126TC2', b: 'Candy' },
+    { m: 'ZWS 6127', b: 'Zanussi' }, { m: 'FWSD 61253', b: 'Whirlpool' }, { m: 'СМА-60С87', b: 'Дарина' },
+  ] },
+  { id: 'fridge', label: 'Холодильник', count: '46', icon: '<rect width="14" height="18" x="5" y="3" rx="2"/><path d="M5 10h14M9 6v2M9 13v3"/>', models: [
+    { m: 'ХМ-6025', b: 'Atlant' }, { m: 'ХМ-4208', b: 'Atlant' }, { m: 'KGN36VL21', b: 'Bosch' }, { m: 'KGV33NW1', b: 'Bosch' },
+    { m: 'RB33J3200SA', b: 'Samsung' }, { m: 'RB30J3000WW', b: 'Samsung' }, { m: 'GA-B419SEJL', b: 'LG' },
+    { m: 'B18S50', b: 'Biryusa' }, { m: 'DF 4200', b: 'Liebherr' }, { m: 'RNB2535', b: 'Gorenje' },
+    { m: 'B1RCNA364', b: 'Beko' }, { m: 'ERT 1502', b: 'Electrolux' }, { m: 'HD340WEN', b: 'Haier' }, { m: 'PC178', b: 'Indesit' },
+  ] },
+  { id: 'dishwasher', label: 'Посудомоечная машина', count: '905', icon: '<rect width="18" height="16" x="3" y="4" rx="2"/><path d="M3 9h18M7 14h.01M10 14h.01M13 14h.01M16 14h.01"/>', models: [
+    { m: 'SMS24AW01R', b: 'Bosch' }, { m: 'SPS25CW03', b: 'Bosch' }, { m: 'ESF 2400', b: 'Electrolux' },
+    { m: 'DFG 15B10', b: 'Beko' }, { m: 'DWF-400', b: 'Daewoo' }, { m: 'GS 63310', b: 'Gorenje' },
+    { m: 'CDP 1L949', b: 'Candy' }, { m: 'HDW15V3', b: 'Haier' }, { m: 'MFD60S100', b: 'Midea' },
+    { m: 'SF 64T354', b: 'Smeg' }, { m: 'ADP 402', b: 'Whirlpool' }, { m: 'ZDM 91501', b: 'Zanussi' },
+  ] },
+  { id: 'freezer', label: 'Морозильник', count: '282', icon: '<rect width="16" height="18" x="4" y="3" rx="2"/><path d="M12 6v8M8 8l8 4M16 8l-8 4" /><circle cx="12" cy="10" r="0.5"/>', models: [
+    { m: 'М-7204', b: 'Atlant' }, { m: 'GSN33VB3', b: 'Bosch' }, { m: 'RZ20FAR', b: 'Samsung' },
+    { m: 'F6152', b: 'Gorenje' }, { m: '106', b: 'Biryusa' }, { m: 'RF-67W00', b: 'Beko' },
+    { m: 'LUF 17W', b: 'Electrolux' }, { m: 'BD-168', b: 'Haier' },
+  ] },
+  { id: 'dryer', label: 'Сушильная машина', count: '60', icon: '<rect width="18" height="18" x="3" y="3" rx="3"/><circle cx="12" cy="13" r="5"/><path d="M9 13c1-1.5 2-1.5 3 0s2 1.5 3 0"/>', models: [
+    { m: 'WTW85560', b: 'Bosch' }, { m: 'DV80M5010', b: 'Samsung' }, { m: 'TD-C80', b: 'LG' },
+    { m: 'D74S82', b: 'Gorenje' }, { m: 'DCU 7330', b: 'Beko' }, { m: 'EDI96150', b: 'Electrolux' },
+  ] },
+  { id: 'microwave', label: 'Микроволновая печь', count: '45', icon: '<rect width="18" height="12" x="3" y="6" rx="2"/><path d="M6 10h7M6 13h7"/><circle cx="17" cy="10" r="0.5"/><circle cx="17" cy="13" r="0.5"/>', models: [
+    { m: 'ME83KRS', b: 'Samsung' }, { m: 'MG23K3575', b: 'Samsung' }, { m: 'MS2042D', b: 'LG' },
+    { m: 'HMT75M451', b: 'Bosch' }, { m: 'EM-G252', b: 'Sharp' }, { m: 'MM720CKE', b: 'Midea' },
+  ] },
+  { id: 'oven', label: 'Духовой шкаф', count: '30', icon: '<rect width="18" height="14" x="3" y="5" rx="2"/><path d="M3 10h18M7 14h10"/><circle cx="7" cy="7.5" r="0.5"/><circle cx="10" cy="7.5" r="0.5"/>', models: [
+    { m: 'HBA534ES0', b: 'Bosch' }, { m: 'OEB 6600', b: 'Electrolux' }, { m: 'BO 735E11', b: 'Gorenje' },
+    { m: 'BIET 24300', b: 'Beko' }, { m: 'NV50K3540', b: 'Samsung' }, { m: 'ДЕ-В1410', b: 'Дарина' },
+  ] },
+];
+
+const BRANDS = Array.from(new Set(SECTIONS.flatMap((s) => s.models.map((m) => m.b)))).sort((a, b) => a.localeCompare(b, 'ru'));
+---
+<BaseLayout title="ЗИПТОП — Взрыв-схемы и каталог моделей техники" active="scheme">
+  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <!-- Шапка каталога моделей -->
+    <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600" data-animate>Каталог оборудования · 3 337 моделей · 6 093 схем · 151 330 запчастей</p>
+    <div class="mt-3 flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl" data-animate>Каталог моделей техники</h1>
+        <p class="mt-3 max-w-xl text-sm leading-6 text-slate-500" data-animate>Выберите вашу модель, чтобы открыть интерактивную взрыв-схему с оригинальными запчастями.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3" data-animate>
+        <label class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-400 transition focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-500/20">
+          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="model-search" type="search" placeholder="Фильтр в каталоге…" class="w-44 bg-transparent text-slate-800 placeholder:text-slate-400 focus:outline-none" aria-label="Фильтр моделей" />
+        </label>
+        <label class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-500">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Бренд</span>
+          <select id="brand-filter" class="bg-transparent text-sm font-semibold text-slate-800 focus:outline-none" aria-label="Фильтр по бренду">
+            <option value="">Все бренды</option>
+            {BRANDS.map((b) => <option value={b}>{b}</option>)}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <!-- Разделы -->
+    <div class="mt-7 flex flex-wrap items-center gap-2.5" data-animate>
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Разделы:</span>
+      <button type="button" data-type="" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition" aria-pressed="true">Все</button>
+      {SECTIONS.map((s) => (
+        <button type="button" data-type={s.id} class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-orange-300 hover:text-orange-600" aria-pressed="false">
+          <svg class="h-4 w-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+          {s.label}
+          <span class="rounded-full bg-slate-100 px-1.5 text-xs font-bold text-slate-400">{s.count}</span>
+        </button>
+      ))}
+    </div>
+
+    <!-- Списки моделей (раскрывающиеся) -->
+    <div class="mt-8 space-y-5">
+      {SECTIONS.map((s) => (
+        <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm" data-section={s.id} data-animate="card">
+          <button type="button" class="flex w-full items-center justify-between gap-4 text-left" data-toggle aria-expanded="false">
+            <span class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+              </span>
+              <span>
+                <span class="block font-bold text-slate-950">{s.label}</span>
+                <span class="block text-xs text-slate-400">Нажмите на модель, чтобы открыть её взрыв-схему</span>
+              </span>
+            </span>
+            <span class="flex shrink-0 items-center gap-2 text-sm font-semibold text-slate-400">
+              {s.count} моделей
+              <svg class="h-4 w-4 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-chevron><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="hidden pt-5" data-models>
+            <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+              {s.models.map((model) => (
+                <button type="button" class="flex items-center justify-between gap-2 rounded-xl border border-slate-200 px-3.5 py-2.5 text-left font-mono text-xs font-semibold text-slate-700 transition hover:border-orange-400 hover:bg-orange-50/50 hover:text-orange-700" data-model={model.m} data-brand={model.b} data-type-label={s.label}>
+                  {model.m}
+                  <span class="rounded bg-slate-100 px-1.5 py-0.5 font-sans text-[10px] font-bold uppercase text-slate-500">{model.b}</span>
+                </button>
+              ))}
+            </div>
+            <p class="hidden pt-4 text-sm text-slate-400" data-empty>По выбранным фильтрам моделей не найдено.</p>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <!-- Интерактивная схема -->
+    <div id="scheme-demo" class="mt-14 scroll-mt-24">
+      <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-600" data-animate>Интерактивный чертёж</p>
+      <h2 class="mt-3 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl" data-animate>Взрыв-схема: <span id="scheme-model" class="text-orange-600">Стиральная машина Bosch WLG20060</span></h2>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500" data-animate>Нажмите на узел схемы или номер в перечне — справа появятся подходящие детали из каталога с ценами и наличием.</p>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-[1fr_420px]">
+        <div>
+          <!-- Схема -->
+          <div class="relative rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8" data-animate="card">
+            <div class="relative mx-auto aspect-[4/5] max-h-[560px] w-full max-w-[460px]">
+              <!-- Машина -->
+              <svg class="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <g>
+                  {PARTS.map((p) => (
+                    <line x1={p.x} y1={p.y} x2={p.ax} y2={p.ay} stroke="#fdba74" stroke-width="1" stroke-dasharray="2.5 2.5" vector-effect="non-scaling-stroke" data-connector={p.n} />
+                  ))}
+                </g>
+              </svg>
+              <div class="absolute left-[34%] top-[14%] h-[82%] w-[32%] rounded-[14%] border-2 border-slate-200 bg-slate-50 shadow-inner">
+                <div class="absolute left-[6%] top-[3%] h-[10%] w-[88%] rounded-lg border border-slate-200 bg-white"></div>
+                <div class="absolute left-1/2 top-[30%] aspect-square w-[74%] -translate-x-1/2 rounded-full border-[3px] border-slate-300 bg-white"></div>
+                <div class="absolute left-1/2 top-[30%] aspect-square w-[74%] -translate-x-1/2 scale-[0.72] rounded-full border-2 border-dashed border-slate-200"></div>
+                <div class="absolute bottom-[4%] left-[8%] h-[4%] w-[14%] rounded bg-slate-200"></div>
+                <div class="absolute bottom-[4%] right-[8%] h-[4%] w-[14%] rounded bg-slate-200"></div>
+              </div>
+              <!-- Узлы -->
+              {PARTS.map((p) => (
+                <button
+                  type="button"
+                  class="group absolute flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-slate-200 bg-white text-slate-500 shadow-sm transition-all duration-300 hover:border-orange-400 hover:text-orange-500 data-[active]:border-orange-500 data-[active]:bg-orange-500 data-[active]:text-white data-[active]:shadow-lg data-[active]:shadow-orange-500/40 sm:h-12 sm:w-12"
+                  style={`left:${p.x}%;top:${p.y}%`}
+                  data-node={p.n}
+                  aria-label={`Узел ${p.n}: ${p.name}`}
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={p.icon} />
+                  <span class="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white transition group-data-[active]:bg-slate-900">{p.n}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Перечень запчастей -->
+          <ol class="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3" data-animate="card">
+            {PARTS.map((p) => (
+              <li>
+                <button type="button" class="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 shadow-sm transition-all duration-300 hover:border-orange-300 hover:shadow-md data-[active]:border-slate-900 data-[active]:bg-slate-900 data-[active]:text-white" data-chip={p.n}>
+                  <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-500 transition" data-chip-num>{p.n}</span>
+                  {p.name}
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <!-- Панель узла -->
+        <aside class="lg:sticky lg:top-24 lg:self-start" data-animate="card">
+          <div class="rounded-3xl bg-slate-950 p-6 text-white" id="node-card">
+            <p class="text-xs font-bold uppercase tracking-wider text-orange-400" id="node-num">Узел №2</p>
+            <h3 class="mt-1.5 text-xl font-extrabold tracking-tight" id="node-name">ТЭН (нагреватель)</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400" id="node-desc">Мощность и длина должны совпадать с оригиналом (±10%).</p>
+          </div>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2" id="node-products"></div>
+          <a href="/" class="mt-4 flex items-center justify-center gap-2 rounded-full bg-orange-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:bg-orange-600">
+            Все детали узла в каталоге <span aria-hidden="true">→</span>
+          </a>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script id="scheme-data" type="application/json" set:html={JSON.stringify(PARTS)}></script>
+
+  <script>
+    import { gsap } from 'gsap';
+
+    interface SchemeProduct { name: string; art: string; price: string }
+    interface SchemePart { n: number; name: string; desc: string; products: SchemeProduct[] }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      gsap.from('[data-animate]:not([data-animate="card"])', { y: 24, autoAlpha: 0, duration: 0.55, stagger: 0.09, ease: 'power3.out', clearProps: 'all' });
+      gsap.from('[data-animate="card"]', { y: 30, autoAlpha: 0, duration: 0.6, stagger: 0.07, delay: 0.3, ease: 'power3.out', clearProps: 'all' });
+    }
+
+    const parts: SchemePart[] = JSON.parse(document.getElementById('scheme-data')?.textContent ?? '[]');
+    const nodeNum = document.getElementById('node-num');
+    const nodeName = document.getElementById('node-name');
+    const nodeDesc = document.getElementById('node-desc');
+    const productsBox = document.getElementById('node-products');
+
+    function selectPart(n: number): void {
+      const part = parts.find((p) => p.n === n);
+      if (!part || !nodeNum || !nodeName || !nodeDesc || !productsBox) return;
+      document.querySelectorAll<HTMLElement>('[data-node]').forEach((el) => {
+        if (Number(el.dataset.node) === n) el.setAttribute('data-active', ''); else el.removeAttribute('data-active');
+      });
+      document.querySelectorAll<HTMLElement>('[data-chip]').forEach((el) => {
+        const on = Number(el.dataset.chip) === n;
+        if (on) el.setAttribute('data-active', ''); else el.removeAttribute('data-active');
+        const num = el.querySelector<HTMLElement>('[data-chip-num]');
+        if (num) num.className = on
+          ? 'flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white transition'
+          : 'flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-500 transition';
+      });
+      nodeNum.textContent = `Узел №${part.n}`;
+      nodeName.textContent = part.name;
+      nodeDesc.textContent = part.desc;
+      productsBox.innerHTML = part.products.map((prod) => `
+        <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-lg">
+          <span class="rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">Оригинал</span>
+          <p class="mt-3 text-sm font-bold leading-5 text-slate-900">${prod.name}</p>
+          <p class="mt-1 text-xs text-slate-400">Арт. ${prod.art}</p>
+          <div class="mt-3 flex items-center justify-between">
+            <span class="text-base font-extrabold text-slate-950">${prod.price}</span>
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-orange-500 text-white transition hover:bg-orange-600" aria-hidden="true">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            </span>
+          </div>
+        </article>`).join('');
+      if (!reduceMotion) {
+        gsap.fromTo('#node-card', { y: 10, autoAlpha: 0.4 }, { y: 0, autoAlpha: 1, duration: 0.35, ease: 'power2.out' });
+        gsap.from(productsBox.children, { y: 14, autoAlpha: 0, duration: 0.35, stagger: 0.07, ease: 'power2.out', clearProps: 'all' });
+      }
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-node], [data-chip]').forEach((el) => {
+      el.addEventListener('click', () => selectPart(Number(el.dataset.node ?? el.dataset.chip)));
+    });
+    selectPart(2);
+
+    /* ---------- Раскрывающиеся списки моделей ---------- */
+    document.querySelectorAll<HTMLElement>('[data-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const box = btn.parentElement?.querySelector<HTMLElement>('[data-models]');
+        if (!box) return;
+        const open = box.classList.toggle('hidden') === false;
+        btn.setAttribute('aria-expanded', String(open));
+        const chevron = btn.querySelector<HTMLElement>('[data-chevron]');
+        if (chevron) chevron.style.transform = open ? 'rotate(180deg)' : '';
+        if (open && !reduceMotion) gsap.from(box.querySelectorAll('[data-model]'), { y: 10, autoAlpha: 0, duration: 0.3, stagger: 0.015, ease: 'power2.out', clearProps: 'all' });
+      });
+    });
+
+    /* ---------- Фильтры: бренд, поиск, разделы ---------- */
+    const searchInput = document.getElementById('model-search') as HTMLInputElement | null;
+    const brandSelect = document.getElementById('brand-filter') as HTMLSelectElement | null;
+    let activeType = '';
+
+    function applyFilters(): void {
+      const q = (searchInput?.value ?? '').trim().toLowerCase();
+      const brand = brandSelect?.value ?? '';
+      document.querySelectorAll<HTMLElement>('[data-section]').forEach((section) => {
+        const typeMatch = !activeType || section.dataset.section === activeType;
+        let visible = 0;
+        section.querySelectorAll<HTMLElement>('[data-model]').forEach((chip) => {
+          const ok = typeMatch
+            && (!brand || chip.dataset.brand === brand)
+            && (!q || (chip.dataset.model ?? '').toLowerCase().includes(q));
+          chip.classList.toggle('hidden', !ok);
+          if (ok) visible += 1;
+        });
+        section.classList.toggle('hidden', !typeMatch);
+        const empty = section.querySelector<HTMLElement>('[data-empty]');
+        if (empty) empty.classList.toggle('hidden', visible > 0);
+        if ((q || brand) && typeMatch) {
+          const box = section.querySelector<HTMLElement>('[data-models]');
+          const toggle = section.querySelector<HTMLElement>('[data-toggle]');
+          if (box && box.classList.contains('hidden')) { box.classList.remove('hidden'); toggle?.setAttribute('aria-expanded', 'true'); }
+        }
+      });
+    }
+
+    searchInput?.addEventListener('input', applyFilters);
+    brandSelect?.addEventListener('change', applyFilters);
+
+    document.querySelectorAll<HTMLButtonElement>('[data-type]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeType = btn.dataset.type ?? '';
+        document.querySelectorAll<HTMLButtonElement>('[data-type]').forEach((b) => {
+          const on = b === btn;
+          b.setAttribute('aria-pressed', String(on));
+          b.className = on
+            ? (b.dataset.type === '' ? 'rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition' : 'flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition')
+            : (b.dataset.type === '' ? 'rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-orange-300 hover:text-orange-600' : 'flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-orange-300 hover:text-orange-600');
+        });
+        applyFilters();
+      });
+    });
+
+    /* ---------- Выбор модели → заголовок схемы ---------- */
+    const schemeModel = document.getElementById('scheme-model');
+    document.querySelectorAll<HTMLElement>('[data-model]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        if (schemeModel) schemeModel.textContent = `${chip.dataset.typeLabel} ${chip.dataset.brand} ${chip.dataset.model}`;
+        document.getElementById('scheme-demo')?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,9 @@
+<button type="button" data-main-login-toggle class="main-login-toggle" aria-label="Войти в личный кабинет" title="Войти в личный кабинет"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></button>
+<script>
+  document.addEventListener('click', async (event) => {
+    if (!(event.target as HTMLElement).closest('[data-main-login-toggle]')) return;
+    const { openLoginModal } = await import('../scripts/login-modal');
+    openLoginModal();
+  });
+</script>
+<style>.main-login-toggle{display:grid;width:40px;height:40px;place-items:center;border:0;border-radius:50%;background:transparent;color:#334155;cursor:pointer}.main-login-toggle:hover{background:#fff7ed;color:#ea580c}</style>

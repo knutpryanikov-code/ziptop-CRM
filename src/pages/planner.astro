@@ -1,0 +1,18 @@
+---
+const destination = '/планировщик/';
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>Переход к планировщику — ЗИПТОП</title>
+  </head>
+  <body>
+    <script is:inline>window.location.replace('/планировщик/' + window.location.search + window.location.hash);</script>
+    <a href={destination}>Открыть планировщик</a>
+  </body>
+</html>
