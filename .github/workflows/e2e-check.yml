@@ -1,0 +1,42 @@
+name: Visual & Navigation Health Checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_url:
+        description: 'Target live base URL (default: https://xn--g1acsdbq.xn--p1ai)'
+        required: false
+        default: 'https://xn--g1acsdbq.xn--p1ai'
+  schedule:
+    # Run daily at 04:00 UTC
+    - cron: '0 4 * * *'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build:prod
+
+      - name: Run visual and navigation tests
+        env:
+          LIVE_TEST_URL: ${{ github.event.inputs.test_url || 'https://xn--g1acsdbq.xn--p1ai' }}
+          CHROME_PATH: google-chrome
+        run: npm test
