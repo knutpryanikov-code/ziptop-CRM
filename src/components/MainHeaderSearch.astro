@@ -1,4 +1,4 @@
-<div class="main-header-search-wrap" data-search-island><form class="main-header-search" action="/каталог/" role="search" data-astro-reload><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="header-search-input" name="q" type="search" autocomplete="off" aria-controls="header-search-results" aria-expanded="false" placeholder="Поиск детали или артикула"/><kbd>⌘ K</kbd></form><div class="main-header-search-dropdown" id="header-search-results" role="listbox" aria-label="Результаты поиска" hidden></div></div>
+<div class="main-header-search-wrap" data-search-island><form class="main-header-search" action="/каталог/" role="search" data-astro-reload><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="header-search-input" name="q" type="search" autocomplete="off" aria-controls="header-search-results" aria-expanded="false" placeholder="Поиск детали или артикула"/><kbd data-search-kbd title="Поиск детали (⌘ K)">⌘ K</kbd></form><div class="main-header-search-dropdown" id="header-search-results" role="listbox" aria-label="Результаты поиска" hidden></div></div>
 <script>
   let searchModule: Promise<typeof import('../scripts/lazy-header-search')> | undefined;
   const activateSearch = () => (searchModule ||= import('../scripts/lazy-header-search')).then(({ initLazyHeaderSearch }) => initLazyHeaderSearch());
@@ -7,6 +7,8 @@
     const form = document.querySelector<HTMLFormElement>('.main-header-search');
     const input = form?.querySelector<HTMLInputElement>('input');
     const header = document.querySelector<HTMLElement>('.main-site-header');
+    const kbd = form?.querySelector<HTMLElement>('[data-search-kbd]');
+    const dropdown = header?.querySelector<HTMLElement>('#header-search-results');
     if (!input || !header || boundInputs.has(input)) return;
     boundInputs.add(input);
     const setBounds = () => {
@@ -14,22 +16,90 @@
       if (!city || !brand) return;
       const headerBounds = header.getBoundingClientRect(); const cityBounds = city.getBoundingClientRect();
       header.style.setProperty('--main-search-right', `${Math.ceil(headerBounds.right - cityBounds.left + 12)}px`);
-      header.style.setProperty('--main-search-open-left', `${Math.max(142, Math.ceil(brand.getBoundingClientRect().right - headerBounds.left + 18))}px`);
+      header.style.setProperty('--main-search-open-left', `${Math.max(158, Math.ceil(brand.getBoundingClientRect().right - headerBounds.left + 18))}px`);
     };
-    const focus = () => { setBounds(); header.classList.add('is-search-focused'); input.placeholder = 'Найти деталь, модель, название или артикул (например: компрессор, уплотнитель, ручка…)'; void activateSearch(); };
-    const blur = () => window.setTimeout(() => { if (document.activeElement !== input) { header.classList.remove('is-search-focused'); input.placeholder = 'Поиск детали или артикула'; } }, 130);
-    input.addEventListener('focus', focus); input.addEventListener('pointerenter', () => void activateSearch(), { once: true }); input.addEventListener('blur', blur);
-    window.addEventListener('resize', setBounds); window.addEventListener('ziptop:city-changed', () => requestAnimationFrame(setBounds));
+    const exitSearch = () => {
+      input.dispatchEvent(new Event('ziptop:search-close'));
+      input.blur();
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      if (dropdown) dropdown.hidden = true;
+      header.classList.remove('is-search-focused');
+      input.placeholder = 'Поиск детали или артикула';
+      if (kbd) {
+        kbd.textContent = '⌘ K';
+        kbd.title = 'Поиск детали (⌘ K)';
+        kbd.removeAttribute('role');
+        kbd.removeAttribute('tabindex');
+      }
+    };
+    const focus = () => {
+      setBounds();
+      header.classList.add('is-search-focused');
+      input.placeholder = 'Найти деталь, модель, название или артикул (например: компрессор, уплотнитель, ручка…)';
+      if (kbd) {
+        kbd.textContent = 'Esc';
+        kbd.title = 'Закрыть поиск (Esc)';
+        kbd.setAttribute('role', 'button');
+        kbd.setAttribute('tabindex', '0');
+      }
+      void activateSearch();
+    };
+    const blur = () => window.setTimeout(() => {
+      if (document.activeElement !== input && (!dropdown || dropdown.hidden)) {
+        header.classList.remove('is-search-focused');
+        input.placeholder = 'Поиск детали или артикула';
+        if (kbd) {
+          kbd.textContent = '⌘ K';
+          kbd.title = 'Поиск детали (⌘ K)';
+          kbd.removeAttribute('role');
+          kbd.removeAttribute('tabindex');
+        }
+      }
+    }, 130);
+    input.addEventListener('focus', focus);
+    input.addEventListener('pointerenter', () => void activateSearch(), { once: true });
+    input.addEventListener('blur', blur);
+    if (kbd) {
+      kbd.addEventListener('pointerdown', (e) => {
+        if (header.classList.contains('is-search-focused')) {
+          e.preventDefault();
+        }
+      });
+      kbd.addEventListener('click', (e) => {
+        if (header.classList.contains('is-search-focused')) {
+          e.preventDefault();
+          e.stopPropagation();
+          exitSearch();
+        }
+      });
+      kbd.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && header.classList.contains('is-search-focused')) {
+          e.preventDefault();
+          exitSearch();
+        }
+      });
+    }
+    window.addEventListener('resize', setBounds);
+    window.addEventListener('ziptop:city-changed', () => requestAnimationFrame(setBounds));
     const cityButton = header.querySelector<HTMLElement>('[data-city-toggle]');
     cityButton && new ResizeObserver(setBounds).observe(cityButton);
     requestAnimationFrame(setBounds);
-    window.addEventListener('keydown', (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); input.focus(); } });
+    window.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        input.focus();
+      } else if (event.key === 'Escape' && header.classList.contains('is-search-focused')) {
+        event.preventDefault();
+        exitSearch();
+      }
+    });
   };
   initHeaderSearch();
   document.addEventListener('astro:page-load', initHeaderSearch);
 </script>
 <style>
-  .main-header-search-wrap{position:relative;z-index:2}.main-header-search{display:flex;min-width:0;align-items:center;gap:8px;height:40px;padding:0 11px;border:1px solid #dce0e6;border-radius:10px;background:#fff;color:#778196;transition:border-color .16s ease,box-shadow .16s ease}.main-header-search:focus-within{border-color:#ea580c;box-shadow:0 0 0 3px rgb(234 88 12 / 15%)}.main-header-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#0f172a;font:inherit;font-size:13px}.main-header-search kbd{border:1px solid #e2e8f0;border-radius:4px;padding:2px 5px;background:#f4f5f7;color:#8d96a7;font-size:10px}.main-header-search-dropdown{position:absolute;top:calc(100% + 8px);left:0;width:100%;max-height:min(520px,calc(100vh - 100px));overflow:auto;box-sizing:border-box;padding:8px;border:1px solid #dfe4ed;border-radius:14px;background:#fff;box-shadow:0 16px 40px rgb(15 23 42 / 18%)}.main-header-search-dropdown[hidden]{display:none}.main-header-search-dropdown :global(.search-result){display:flex;align-items:center;gap:10px;min-height:58px;padding:7px 9px;border-radius:10px;color:#0f172a;overflow:hidden;text-decoration:none}.main-header-search-dropdown :global(.search-result:hover),.main-header-search-dropdown :global(.search-result.is-active){background:#fff7ed}.main-header-search-dropdown :global(.search-result-img){width:44px;height:44px;flex:0 0 44px;border:1px solid #f1f5f9;border-radius:8px;object-fit:contain;background:#f8fafc}.main-header-search-dropdown :global(.search-result-info){display:grid;min-width:0;flex:1;gap:3px}.main-header-search-dropdown :global(.search-result-title){overflow:hidden;font-size:13px;font-weight:700;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}.main-header-search-dropdown :global(.search-result-meta),.main-header-search-dropdown :global(.search-empty),.main-header-search-dropdown :global(.search-loading){color:#64748b;font-size:11px}.main-header-search-dropdown :global(.search-result-price){flex:0 0 auto;color:#ea580c;font-size:14px;font-weight:800}.main-header-search-dropdown :global(.search-empty),.main-header-search-dropdown :global(.search-loading){margin:0;padding:14px;text-align:center}
-  @media (min-width:1181px){:global(.main-site-header) .main-header-search-wrap{position:absolute;top:12px;right:var(--main-search-right,212px);left:calc(100% - var(--main-search-right,212px) - 265px);z-index:2;transition:left .42s cubic-bezier(.2,0,0,1),opacity .18s ease-out,transform .18s ease-out}:global(.main-site-header.is-search-focused) .main-header-search-wrap{left:var(--main-search-open-left,142px)}}
+  .main-header-search-wrap{position:relative;z-index:2}.main-header-search{display:flex;min-width:0;align-items:center;gap:8px;height:40px;padding:0 11px;border:1px solid #dce0e6;border-radius:10px;background:#fff;color:#778196;transition:border-color .16s ease,box-shadow .16s ease}.main-header-search:focus-within{border-color:#ea580c;box-shadow:0 0 0 3px rgb(234 88 12 / 15%)}.main-header-search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#0f172a;font:inherit;font-size:13px}.main-header-search kbd{border:1px solid #e2e8f0;border-radius:4px;padding:2px 5px;background:#f4f5f7;color:#8d96a7;font-size:10px}.main-header-search kbd[role="button"]{cursor:pointer;user-select:none;transition:background-color .15s ease,color .15s ease}.main-header-search kbd[role="button"]:hover{background:#e2e8f0;color:#0f172a}.main-header-search-dropdown{position:absolute;top:calc(100% + 8px);left:0;width:100%;max-height:min(520px,calc(100vh - 100px));overflow:auto;box-sizing:border-box;padding:8px;border:1px solid #dfe4ed;border-radius:14px;background:#fff;box-shadow:0 16px 40px rgb(15 23 42 / 18%)}.main-header-search-dropdown[hidden]{display:none}.main-header-search-dropdown :global(.search-result){display:flex;align-items:center;gap:10px;min-height:58px;padding:7px 9px;border-radius:10px;color:#0f172a;overflow:hidden;text-decoration:none}.main-header-search-dropdown :global(.search-result:hover),.main-header-search-dropdown :global(.search-result.is-active){background:#fff7ed}.main-header-search-dropdown :global(.search-result-img){width:44px;height:44px;flex:0 0 44px;border:1px solid #f1f5f9;border-radius:8px;object-fit:contain;background:#f8fafc}.main-header-search-dropdown :global(.search-result-info){display:grid;min-width:0;flex:1;gap:3px}.main-header-search-dropdown :global(.search-result-title){overflow:hidden;font-size:13px;font-weight:700;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}.main-header-search-dropdown :global(.search-result-meta),.main-header-search-dropdown :global(.search-empty),.main-header-search-dropdown :global(.search-loading){color:#64748b;font-size:11px}.main-header-search-dropdown :global(.search-result-price){flex:0 0 auto;color:#ea580c;font-size:14px;font-weight:800}.main-header-search-dropdown :global(.search-empty),.main-header-search-dropdown :global(.search-loading){margin:0;padding:14px;text-align:center}
+  @media (min-width:1181px){:global(.main-site-header) .main-header-search-wrap{position:absolute;top:12px;right:var(--main-search-right,212px);left:calc(100% - var(--main-search-right,212px) - 265px);z-index:2;transition:left .42s cubic-bezier(.2,0,0,1),opacity .18s ease-out,transform .18s ease-out}:global(.main-site-header.is-search-focused) .main-header-search-wrap{left:var(--main-search-open-left,158px)}}
   @media(max-width:1180px){.main-header-search-wrap{order:3;min-width:100%;max-width:none}}@media(max-width:640px){.main-header-search kbd{display:none}}
 </style>
