@@ -54,7 +54,7 @@ const formatPrice = new Intl.NumberFormat('ru-RU');
             <p class="mt-1 truncate text-[10px] font-semibold text-slate-400">Арт. {product.sku}</p>
             <p class="mt-2 text-xs text-slate-400"><span class="text-amber-500">★</span> {product.rating || '4.8'} · {product.reviews || 0} отзывов</p>
             <div class="mt-auto pt-3">
-              <div class="flex items-center justify-between gap-3"><p class="font-extrabold tracking-tight text-slate-950">{formatPrice.format(product.price)}&nbsp;₽</p><button type="button" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-600 text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.96]" data-add-to-cart data-sku={product.sku} data-name={product.name} data-price={product.price} data-old-price={product.oldPrice || ''} data-image={product.image} data-category={product.category} aria-label={`Купить «${product.name}»`} title="Купить"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button></div>
+              <div class="flex items-center justify-between gap-3"><p class="font-extrabold tracking-tight text-slate-950">{formatPrice.format(product.price)}&nbsp;₽</p><button type="button" class="home-cart-button flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-600 text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.96]" data-home-add-to-cart data-sku={product.sku} data-name={product.name} data-price={product.price} data-old-price={product.oldPrice || ''} data-image={product.image} data-category={product.category} aria-label={`Купить «${product.name}»`} title="Купить"><svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></button></div>
               {product.delivery && <p class="mt-1 text-[10px] leading-4 text-emerald-700">{product.delivery} в пункте выдачи</p>}
             </div>
           </div>
@@ -65,3 +65,40 @@ const formatPrice = new Intl.NumberFormat('ru-RU');
     <p class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Каталог временно обновляется. <a href="/каталог/" class="font-semibold text-orange-600">Открыть каталог</a></p>
   )}
 </section>
+
+<style>
+  .home-cart-button.in-cart { background-color: #16a34a; }
+  .home-cart-button.in-cart:hover { background-color: #15803d; }
+</style>
+
+<script>
+  const renderHomeCart = () => {
+    let items: { sku: string; quantity: number }[] = [];
+    try {
+      const stored = JSON.parse(localStorage.getItem('ziptop_cart') || '[]');
+      if (Array.isArray(stored)) items = stored;
+    } catch {}
+    const skus = new Set(items.filter((item) => item.quantity > 0).map((item) => item.sku));
+    document.querySelectorAll<HTMLButtonElement>('[data-home-add-to-cart]').forEach((button) => {
+      const inCart = skus.has(button.dataset.sku || '');
+      button.classList.toggle('in-cart', inCart);
+      const label = inCart ? 'В корзине — открыть корзину' : 'Купить';
+      button.title = label;
+      button.setAttribute('aria-label', `${label} «${button.dataset.name || ''}»`);
+    });
+  };
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-home-add-to-cart]');
+    if (!button) return;
+    event.preventDefault();
+    const { addFromButton, openCart } = await import('../scripts/lazy-cart');
+    if (button.classList.contains('in-cart')) openCart();
+    else addFromButton(button);
+  });
+  renderHomeCart();
+  document.addEventListener('astro:page-load', renderHomeCart);
+  window.addEventListener('cart:updated', renderHomeCart);
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'ziptop_cart' || event.key === null) renderHomeCart();
+  });
+</script>
