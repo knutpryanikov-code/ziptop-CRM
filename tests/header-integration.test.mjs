@@ -4,6 +4,49 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
+
+// ---------------------------------------------------------------------------
+// Chrome CDP launcher: dedicated temp profile + readiness polling.
+// Without --user-data-dir Chrome may bind DevTools to IPv6 ::1 only, and the
+// fixed 1.2s sleep raced Chrome startup — Node fetch to 127.0.0.1 then failed
+// with "fetch failed" in CI.
+// ---------------------------------------------------------------------------
+async function launchChrome(chromePath, port) {
+  const profileDir = fs.mkdtempSync(join(os.tmpdir(), 'ziptop-chrome-'));
+  const chrome = spawn(chromePath, [
+    '--headless',
+    `--remote-debugging-port=${port}`,
+    '--remote-debugging-address=127.0.0.1',
+    '--disable-gpu',
+    '--no-sandbox',
+    '--no-first-run',
+    '--no-default-browser-check',
+    `--user-data-dir=${profileDir}`,
+  ], { stdio: ['ignore', 'ignore', 'pipe'] });
+  let stderr = '';
+  chrome.stderr?.on('data', (d) => { stderr += String(d); });
+  const deadline = Date.now() + 20_000;
+  for (;;) {
+    if (chrome.exitCode !== null) {
+      throw new Error(`Chrome exited early (code ${chrome.exitCode}): ${stderr.slice(-500)}`);
+    }
+    try {
+      const res = await fetch(`http://127.0.0.1:${port}/json/version`);
+      if (res.ok) break;
+    } catch {}
+    if (Date.now() > deadline) {
+      try { chrome.kill(); } catch {}
+      throw new Error(`Chrome DevTools endpoint did not start on port ${port}: ${stderr.slice(-500)}`);
+    }
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  const cleanup = () => {
+    try { chrome.kill(); } catch {}
+    try { fs.rmSync(profileDir, { recursive: true, force: true }); } catch {}
+  };
+  return { cleanup };
+}
 
 const DIST_DIR = join(process.cwd(), 'dist');
 const LIVE_URL = process.env.LIVE_TEST_URL || 'https://xn--g1acsdbq.xn--p1ai';
@@ -112,14 +155,7 @@ test('3. Headers in main site and market are pixel-perfect aligned', async (t) =
   }
 
   const port = 9223;
-  const chrome = spawn(chromePath, [
-    '--headless',
-    `--remote-debugging-port=${port}`,
-    '--disable-gpu',
-    '--no-sandbox',
-  ]);
-
-  await new Promise((r) => setTimeout(r, 1200));
+  const { cleanup: cleanupChrome } = await launchChrome(chromePath, port);
 
   async function inspect(url) {
     const res = await fetch(`http://127.0.0.1:${port}/json/new?` + encodeURIComponent(url), { method: 'PUT' });
@@ -221,7 +257,7 @@ test('3. Headers in main site and market are pixel-perfect aligned', async (t) =
 
     appendToSummary(summaryTable);
   } finally {
-    chrome.kill();
+    cleanupChrome();
   }
 });
 
@@ -240,14 +276,7 @@ test('4. Search input does not cover logo, and Esc exits focus on both pages', a
   }
 
   const port = 9228;
-  const chrome = spawn(chromePath, [
-    '--headless',
-    `--remote-debugging-port=${port}`,
-    '--disable-gpu',
-    '--no-sandbox',
-  ]);
-
-  await new Promise((r) => setTimeout(r, 1200));
+  const { cleanup: cleanupChrome } = await launchChrome(chromePath, port);
 
   async function testSearch(url, name) {
     const res = await fetch(`http://127.0.0.1:${port}/json/new?` + encodeURIComponent(url), { method: 'PUT' });
@@ -278,26 +307,31 @@ test('4. Search input does not cover logo, and Esc exits focus on both pages', a
 
     // Focus search input and check bounds
     const focusResult = await send('Runtime.evaluate', {
-      expression: `(() => {
+      expression: `(async () => {
         const input = document.querySelector('#header-search-input');
+        const search = document.querySelector('.main-header-search-wrap, .compact-search-wrap');
+        const kbd = search?.querySelector('kbd');
         input.focus();
-        return new Promise(resolve => {
-          setTimeout(() => {
-            const brand = document.querySelector('.main-site-brand, .unified-brand');
-            const search = document.querySelector('.main-header-search-wrap, .compact-search-wrap');
-            const kbd = search?.querySelector('kbd');
-            const brandRight = brand.getBoundingClientRect().right;
-            const searchLeft = search.getBoundingClientRect().left;
-            resolve({
-              brandRight,
-              searchLeft,
-              gap: searchLeft - brandRight,
-              coversLogo: searchLeft < brandRight,
-              kbdText: kbd?.textContent?.trim(),
-              kbdRole: kbd?.getAttribute('role')
-            });
-          }, 450);
-        });
+        // Module scripts load asynchronously — poll until the focus handler
+        // swaps the badge instead of relying on a fixed delay (CI runners
+        // are slow and the handler may attach late).
+        let kbdText = kbd?.textContent?.trim();
+        for (let i = 0; i < 30 && kbdText !== 'Esc'; i++) {
+          await new Promise((r) => setTimeout(r, 200));
+          if (document.activeElement !== input) input.focus();
+          kbdText = kbd?.textContent?.trim();
+        }
+        const brand = document.querySelector('.main-site-brand, .unified-brand');
+        const brandRight = brand.getBoundingClientRect().right;
+        const searchLeft = search.getBoundingClientRect().left;
+        return {
+          brandRight,
+          searchLeft,
+          gap: searchLeft - brandRight,
+          coversLogo: searchLeft < brandRight,
+          kbdText,
+          kbdRole: kbd?.getAttribute('role')
+        };
       })()`,
       awaitPromise: true,
       returnByValue: true
@@ -315,16 +349,17 @@ test('4. Search input does not cover logo, and Esc exits focus on both pages', a
         const kbd = document.querySelector('.main-header-search-wrap kbd, .compact-search-wrap kbd');
         kbd.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true, cancelable: true }));
         kbd.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-        return new Promise(resolve => {
-          setTimeout(() => {
-            const header = document.querySelector('.main-site-header, .unified-header');
-            const kbd = header?.querySelector('kbd');
-            resolve({
-              isFocused: header.classList.contains('is-search-focused'),
-              kbdText: kbd?.textContent?.trim()
-            });
-          }, 350);
-        });
+        return (async () => {
+          const header = document.querySelector('.main-site-header, .unified-header');
+          let isFocused = header.classList.contains('is-search-focused');
+          let kbdText = header?.querySelector('kbd')?.textContent?.trim();
+          for (let i = 0; i < 20 && isFocused; i++) {
+            await new Promise((r) => setTimeout(r, 150));
+            isFocused = header.classList.contains('is-search-focused');
+            kbdText = header?.querySelector('kbd')?.textContent?.trim();
+          }
+          return { isFocused, kbdText };
+        })();
       })()`,
       awaitPromise: true,
       returnByValue: true
@@ -371,7 +406,7 @@ test('4. Search input does not cover logo, and Esc exits focus on both pages', a
   } finally {
     sMain.close();
     sMarket.close();
-    chrome.kill();
+    cleanupChrome();
   }
 });
 
